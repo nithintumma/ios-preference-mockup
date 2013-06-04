@@ -9,16 +9,22 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController{
+    UIPanGestureRecognizer* gestureRecognizer;
+    
+    NSArray *thanks;
     NSArray *faces;
     NSArray *movies;
     NSArray *music;
     NSArray *shirts;
     NSArray *shoes;
 }
+@property (weak, nonatomic) IBOutlet UILabel *coord;
 
 @property (weak, nonatomic) IBOutlet UIButton *face;
 @property (weak, nonatomic) IBOutlet UIButton *left;
 @property (weak, nonatomic) IBOutlet UIButton *right;
+@property (weak, nonatomic) IBOutlet UIImageView *leftCheck;
+@property (weak, nonatomic) IBOutlet UIImageView *rightCheck;
 @property (weak, nonatomic) IBOutlet UILabel *question;
 
 - (IBAction)swipeRight:(id)sender;

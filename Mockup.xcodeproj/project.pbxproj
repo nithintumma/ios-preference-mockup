@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1817F203175DEB0200855A36 /* ToastAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 1817F202175DEB0200855A36 /* ToastAlert.m */; };
+		1817F206175DF02800855A36 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 1817F205175DF02800855A36 /* check.png */; };
 		18F0B430175D73980065224E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F0B42F175D73980065224E /* UIKit.framework */; };
 		18F0B432175D73980065224E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F0B431175D73980065224E /* Foundation.framework */; };
 		18F0B434175D73980065224E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F0B433175D73980065224E /* CoreGraphics.framework */; };
@@ -67,6 +69,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1817F201175DEB0200855A36 /* ToastAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToastAlert.h; sourceTree = "<group>"; };
+		1817F202175DEB0200855A36 /* ToastAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToastAlert.m; sourceTree = "<group>"; };
+		1817F205175DF02800855A36 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = check.png; path = ../../../../../../Pictures/check.png; sourceTree = "<group>"; };
 		18F0B42B175D73980065224E /* Mockup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mockup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18F0B42F175D73980065224E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		18F0B431175D73980065224E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -186,6 +191,8 @@
 				18F0B44D175D73980065224E /* ViewController.h */,
 				18F0B44E175D73980065224E /* ViewController.m */,
 				18F0B436175D73980065224E /* Supporting Files */,
+				1817F201175DEB0200855A36 /* ToastAlert.h */,
+				1817F202175DEB0200855A36 /* ToastAlert.m */,
 			);
 			path = Mockup;
 			sourceTree = "<group>";
@@ -193,6 +200,7 @@
 		18F0B436175D73980065224E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1817F205175DF02800855A36 /* check.png */,
 				18F0B4AB175DAD0D0065224E /* circle.png */,
 				18F0B4A5175DAC4B0065224E /* james.jpg */,
 				18F0B4A6175DAC4B0065224E /* neel.jpg */,
@@ -396,6 +404,7 @@
 				18F0B4A9175DAC4B0065224E /* neel.jpg in Resources */,
 				18F0B4AA175DAC4B0065224E /* nithin.jpg in Resources */,
 				18F0B4AC175DAD0D0065224E /* circle.png in Resources */,
+				1817F206175DF02800855A36 /* check.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +442,7 @@
 				18F0B43C175D73980065224E /* main.m in Sources */,
 				18F0B440175D73980065224E /* AppDelegate.m in Sources */,
 				18F0B44F175D73980065224E /* ViewController.m in Sources */,
+				1817F203175DEB0200855A36 /* ToastAlert.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -619,6 +629,7 @@
 				18F0B469175D73990065224E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		18F0B46A175D73990065224E /* Build configuration list for PBXNativeTarget "MockupTests" */ = {
 			isa = XCConfigurationList;
@@ -627,6 +638,7 @@
 				18F0B46C175D73990065224E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
