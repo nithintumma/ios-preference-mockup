@@ -24,6 +24,36 @@
 		18F0B459175D73990065224E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F0B431175D73980065224E /* Foundation.framework */; };
 		18F0B461175D73990065224E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B45F175D73990065224E /* InfoPlist.strings */; };
 		18F0B464175D73990065224E /* MockupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F0B463175D73990065224E /* MockupTests.m */; };
+		18F0B48B175DA3D00065224E /* after_earth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B46E175DA3CF0065224E /* after_earth.jpg */; };
+		18F0B48C175DA3D00065224E /* fast6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B46F175DA3CF0065224E /* fast6.jpg */; };
+		18F0B48D175DA3D00065224E /* internship.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B470175DA3CF0065224E /* internship.jpg */; };
+		18F0B48E175DA3D00065224E /* after_earth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B471175DA3CF0065224E /* after_earth.jpg */; };
+		18F0B48F175DA3D00065224E /* fast6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B472175DA3CF0065224E /* fast6.jpg */; };
+		18F0B490175DA3D00065224E /* internship.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B473175DA3CF0065224E /* internship.jpg */; };
+		18F0B491175DA3D00065224E /* florida_georgia_line.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B475175DA3CF0065224E /* florida_georgia_line.jpg */; };
+		18F0B492175DA3D00065224E /* macklemore.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B476175DA3CF0065224E /* macklemore.jpg */; };
+		18F0B493175DA3D00065224E /* pink.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B477175DA3CF0065224E /* pink.jpg */; };
+		18F0B494175DA3D00065224E /* timberlake.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B478175DA3CF0065224E /* timberlake.jpg */; };
+		18F0B495175DA3D00065224E /* florida_georgia_line.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B479175DA3CF0065224E /* florida_georgia_line.jpg */; };
+		18F0B496175DA3D00065224E /* macklemore.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B47A175DA3CF0065224E /* macklemore.jpg */; };
+		18F0B497175DA3D00065224E /* pink.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B47B175DA3CF0065224E /* pink.jpg */; };
+		18F0B498175DA3D00065224E /* timberlake.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B47C175DA3CF0065224E /* timberlake.jpg */; };
+		18F0B499175DA3D00065224E /* jcrew.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B47E175DA3CF0065224E /* jcrew.jpg */; };
+		18F0B49A175DA3D00065224E /* polo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B47F175DA3CF0065224E /* polo.jpg */; };
+		18F0B49B175DA3D00065224E /* vneck.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B480175DA3CF0065224E /* vneck.jpg */; };
+		18F0B49C175DA3D00065224E /* jcrew.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B481175DA3CF0065224E /* jcrew.jpg */; };
+		18F0B49D175DA3D00065224E /* polo.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B482175DA3D00065224E /* polo.jpg */; };
+		18F0B49E175DA3D00065224E /* vneck.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B483175DA3D00065224E /* vneck.jpg */; };
+		18F0B49F175DA3D00065224E /* airforce.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B485175DA3D00065224E /* airforce.jpg */; };
+		18F0B4A0175DA3D00065224E /* cole_haan.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B486175DA3D00065224E /* cole_haan.jpg */; };
+		18F0B4A1175DA3D00065224E /* sperry.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B487175DA3D00065224E /* sperry.jpg */; };
+		18F0B4A2175DA3D00065224E /* airforce.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B488175DA3D00065224E /* airforce.jpg */; };
+		18F0B4A3175DA3D00065224E /* cole_haan.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B489175DA3D00065224E /* cole_haan.jpg */; };
+		18F0B4A4175DA3D00065224E /* sperry.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B48A175DA3D00065224E /* sperry.jpg */; };
+		18F0B4A8175DAC4B0065224E /* james.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B4A5175DAC4B0065224E /* james.jpg */; };
+		18F0B4A9175DAC4B0065224E /* neel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B4A6175DAC4B0065224E /* neel.jpg */; };
+		18F0B4AA175DAC4B0065224E /* nithin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B4A7175DAC4B0065224E /* nithin.jpg */; };
+		18F0B4AC175DAD0D0065224E /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F0B4AB175DAD0D0065224E /* circle.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +90,36 @@
 		18F0B460175D73990065224E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		18F0B462175D73990065224E /* MockupTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MockupTests.h; sourceTree = "<group>"; };
 		18F0B463175D73990065224E /* MockupTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MockupTests.m; sourceTree = "<group>"; };
+		18F0B46E175DA3CF0065224E /* after_earth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = after_earth.jpg; sourceTree = "<group>"; };
+		18F0B46F175DA3CF0065224E /* fast6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fast6.jpg; sourceTree = "<group>"; };
+		18F0B470175DA3CF0065224E /* internship.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = internship.jpg; sourceTree = "<group>"; };
+		18F0B471175DA3CF0065224E /* after_earth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = after_earth.jpg; path = ../../../../../Processing/Pixelate/mock_images/movies/after_earth.jpg; sourceTree = "<group>"; };
+		18F0B472175DA3CF0065224E /* fast6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = fast6.jpg; path = ../../../../../Processing/Pixelate/mock_images/movies/fast6.jpg; sourceTree = "<group>"; };
+		18F0B473175DA3CF0065224E /* internship.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = internship.jpg; path = ../../../../../Processing/Pixelate/mock_images/movies/internship.jpg; sourceTree = "<group>"; };
+		18F0B475175DA3CF0065224E /* florida_georgia_line.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = florida_georgia_line.jpg; sourceTree = "<group>"; };
+		18F0B476175DA3CF0065224E /* macklemore.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = macklemore.jpg; sourceTree = "<group>"; };
+		18F0B477175DA3CF0065224E /* pink.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pink.jpg; sourceTree = "<group>"; };
+		18F0B478175DA3CF0065224E /* timberlake.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = timberlake.jpg; sourceTree = "<group>"; };
+		18F0B479175DA3CF0065224E /* florida_georgia_line.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = florida_georgia_line.jpg; path = ../../../../../Processing/Pixelate/mock_images/music/florida_georgia_line.jpg; sourceTree = "<group>"; };
+		18F0B47A175DA3CF0065224E /* macklemore.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = macklemore.jpg; path = ../../../../../Processing/Pixelate/mock_images/music/macklemore.jpg; sourceTree = "<group>"; };
+		18F0B47B175DA3CF0065224E /* pink.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = pink.jpg; path = ../../../../../Processing/Pixelate/mock_images/music/pink.jpg; sourceTree = "<group>"; };
+		18F0B47C175DA3CF0065224E /* timberlake.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = timberlake.jpg; path = ../../../../../Processing/Pixelate/mock_images/music/timberlake.jpg; sourceTree = "<group>"; };
+		18F0B47E175DA3CF0065224E /* jcrew.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = jcrew.jpg; sourceTree = "<group>"; };
+		18F0B47F175DA3CF0065224E /* polo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = polo.jpg; sourceTree = "<group>"; };
+		18F0B480175DA3CF0065224E /* vneck.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = vneck.jpg; sourceTree = "<group>"; };
+		18F0B481175DA3CF0065224E /* jcrew.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = jcrew.jpg; path = ../../../../../Processing/Pixelate/mock_images/shirts/jcrew.jpg; sourceTree = "<group>"; };
+		18F0B482175DA3D00065224E /* polo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = polo.jpg; path = ../../../../../Processing/Pixelate/mock_images/shirts/polo.jpg; sourceTree = "<group>"; };
+		18F0B483175DA3D00065224E /* vneck.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = vneck.jpg; path = ../../../../../Processing/Pixelate/mock_images/shirts/vneck.jpg; sourceTree = "<group>"; };
+		18F0B485175DA3D00065224E /* airforce.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = airforce.jpg; sourceTree = "<group>"; };
+		18F0B486175DA3D00065224E /* cole_haan.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cole_haan.jpg; sourceTree = "<group>"; };
+		18F0B487175DA3D00065224E /* sperry.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sperry.jpg; sourceTree = "<group>"; };
+		18F0B488175DA3D00065224E /* airforce.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = airforce.jpg; path = ../../../../../Processing/Pixelate/mock_images/shoes/airforce.jpg; sourceTree = "<group>"; };
+		18F0B489175DA3D00065224E /* cole_haan.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cole_haan.jpg; path = ../../../../../Processing/Pixelate/mock_images/shoes/cole_haan.jpg; sourceTree = "<group>"; };
+		18F0B48A175DA3D00065224E /* sperry.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = sperry.jpg; path = ../../../../../Processing/Pixelate/mock_images/shoes/sperry.jpg; sourceTree = "<group>"; };
+		18F0B4A5175DAC4B0065224E /* james.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = james.jpg; path = ../../../../../Processing/Pixelate/mock_images/james.jpg; sourceTree = "<group>"; };
+		18F0B4A6175DAC4B0065224E /* neel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = neel.jpg; path = ../../../../../Processing/Pixelate/mock_images/neel.jpg; sourceTree = "<group>"; };
+		18F0B4A7175DAC4B0065224E /* nithin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = nithin.jpg; path = ../../../../../Processing/Pixelate/mock_images/nithin.jpg; sourceTree = "<group>"; };
+		18F0B4AB175DAD0D0065224E /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = circle.png; path = ../../../../../Processing/Pixelate/mock_images/circle.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +193,27 @@
 		18F0B436175D73980065224E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				18F0B4AB175DAD0D0065224E /* circle.png */,
+				18F0B4A5175DAC4B0065224E /* james.jpg */,
+				18F0B4A6175DAC4B0065224E /* neel.jpg */,
+				18F0B4A7175DAC4B0065224E /* nithin.jpg */,
+				18F0B46D175DA3CF0065224E /* movies */,
+				18F0B471175DA3CF0065224E /* after_earth.jpg */,
+				18F0B472175DA3CF0065224E /* fast6.jpg */,
+				18F0B473175DA3CF0065224E /* internship.jpg */,
+				18F0B474175DA3CF0065224E /* music */,
+				18F0B479175DA3CF0065224E /* florida_georgia_line.jpg */,
+				18F0B47A175DA3CF0065224E /* macklemore.jpg */,
+				18F0B47B175DA3CF0065224E /* pink.jpg */,
+				18F0B47C175DA3CF0065224E /* timberlake.jpg */,
+				18F0B47D175DA3CF0065224E /* shirts */,
+				18F0B481175DA3CF0065224E /* jcrew.jpg */,
+				18F0B482175DA3D00065224E /* polo.jpg */,
+				18F0B483175DA3D00065224E /* vneck.jpg */,
+				18F0B484175DA3D00065224E /* shoes */,
+				18F0B488175DA3D00065224E /* airforce.jpg */,
+				18F0B489175DA3D00065224E /* cole_haan.jpg */,
+				18F0B48A175DA3D00065224E /* sperry.jpg */,
 				18F0B437175D73980065224E /* Mockup-Info.plist */,
 				18F0B438175D73980065224E /* InfoPlist.strings */,
 				18F0B43B175D73980065224E /* main.m */,
@@ -161,6 +242,51 @@
 				18F0B45F175D73990065224E /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		18F0B46D175DA3CF0065224E /* movies */ = {
+			isa = PBXGroup;
+			children = (
+				18F0B46E175DA3CF0065224E /* after_earth.jpg */,
+				18F0B46F175DA3CF0065224E /* fast6.jpg */,
+				18F0B470175DA3CF0065224E /* internship.jpg */,
+			);
+			name = movies;
+			path = ../../../../../Processing/Pixelate/mock_images/movies;
+			sourceTree = "<group>";
+		};
+		18F0B474175DA3CF0065224E /* music */ = {
+			isa = PBXGroup;
+			children = (
+				18F0B475175DA3CF0065224E /* florida_georgia_line.jpg */,
+				18F0B476175DA3CF0065224E /* macklemore.jpg */,
+				18F0B477175DA3CF0065224E /* pink.jpg */,
+				18F0B478175DA3CF0065224E /* timberlake.jpg */,
+			);
+			name = music;
+			path = ../../../../../Processing/Pixelate/mock_images/music;
+			sourceTree = "<group>";
+		};
+		18F0B47D175DA3CF0065224E /* shirts */ = {
+			isa = PBXGroup;
+			children = (
+				18F0B47E175DA3CF0065224E /* jcrew.jpg */,
+				18F0B47F175DA3CF0065224E /* polo.jpg */,
+				18F0B480175DA3CF0065224E /* vneck.jpg */,
+			);
+			name = shirts;
+			path = ../../../../../Processing/Pixelate/mock_images/shirts;
+			sourceTree = "<group>";
+		};
+		18F0B484175DA3D00065224E /* shoes */ = {
+			isa = PBXGroup;
+			children = (
+				18F0B485175DA3D00065224E /* airforce.jpg */,
+				18F0B486175DA3D00065224E /* cole_haan.jpg */,
+				18F0B487175DA3D00065224E /* sperry.jpg */,
+			);
+			name = shoes;
+			path = ../../../../../Processing/Pixelate/mock_images/shoes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,6 +366,36 @@
 				18F0B446175D73980065224E /* Default-568h@2x.png in Resources */,
 				18F0B449175D73980065224E /* MainStoryboard_iPhone.storyboard in Resources */,
 				18F0B44C175D73980065224E /* MainStoryboard_iPad.storyboard in Resources */,
+				18F0B48B175DA3D00065224E /* after_earth.jpg in Resources */,
+				18F0B48C175DA3D00065224E /* fast6.jpg in Resources */,
+				18F0B48D175DA3D00065224E /* internship.jpg in Resources */,
+				18F0B48E175DA3D00065224E /* after_earth.jpg in Resources */,
+				18F0B48F175DA3D00065224E /* fast6.jpg in Resources */,
+				18F0B490175DA3D00065224E /* internship.jpg in Resources */,
+				18F0B491175DA3D00065224E /* florida_georgia_line.jpg in Resources */,
+				18F0B492175DA3D00065224E /* macklemore.jpg in Resources */,
+				18F0B493175DA3D00065224E /* pink.jpg in Resources */,
+				18F0B494175DA3D00065224E /* timberlake.jpg in Resources */,
+				18F0B495175DA3D00065224E /* florida_georgia_line.jpg in Resources */,
+				18F0B496175DA3D00065224E /* macklemore.jpg in Resources */,
+				18F0B497175DA3D00065224E /* pink.jpg in Resources */,
+				18F0B498175DA3D00065224E /* timberlake.jpg in Resources */,
+				18F0B499175DA3D00065224E /* jcrew.jpg in Resources */,
+				18F0B49A175DA3D00065224E /* polo.jpg in Resources */,
+				18F0B49B175DA3D00065224E /* vneck.jpg in Resources */,
+				18F0B49C175DA3D00065224E /* jcrew.jpg in Resources */,
+				18F0B49D175DA3D00065224E /* polo.jpg in Resources */,
+				18F0B49E175DA3D00065224E /* vneck.jpg in Resources */,
+				18F0B49F175DA3D00065224E /* airforce.jpg in Resources */,
+				18F0B4A0175DA3D00065224E /* cole_haan.jpg in Resources */,
+				18F0B4A1175DA3D00065224E /* sperry.jpg in Resources */,
+				18F0B4A2175DA3D00065224E /* airforce.jpg in Resources */,
+				18F0B4A3175DA3D00065224E /* cole_haan.jpg in Resources */,
+				18F0B4A4175DA3D00065224E /* sperry.jpg in Resources */,
+				18F0B4A8175DAC4B0065224E /* james.jpg in Resources */,
+				18F0B4A9175DAC4B0065224E /* neel.jpg in Resources */,
+				18F0B4AA175DAC4B0065224E /* nithin.jpg in Resources */,
+				18F0B4AC175DAD0D0065224E /* circle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +549,7 @@
 				GCC_PREFIX_HEADER = "Mockup/Mockup-Prefix.pch";
 				INFOPLIST_FILE = "Mockup/Mockup-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -404,6 +561,7 @@
 				GCC_PREFIX_HEADER = "Mockup/Mockup-Prefix.pch";
 				INFOPLIST_FILE = "Mockup/Mockup-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
