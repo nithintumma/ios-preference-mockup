@@ -4,7 +4,7 @@
 //
 //  Created by Neel Patel on 6/3/13.
 //  Copyright (c) 2013 Neel Patel. All rights reserved.
-//
+//  as part of Mockup project
 
 #import <UIKit/UIKit.h>
 
