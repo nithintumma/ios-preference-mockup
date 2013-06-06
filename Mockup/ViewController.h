@@ -21,8 +21,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *coord;
 
 @property (weak, nonatomic) IBOutlet UIButton *face;
-@property (weak, nonatomic) IBOutlet UIButton *left;
-@property (weak, nonatomic) IBOutlet UIButton *right;
+@property (weak, nonatomic) IBOutlet UIImageView *top;
+@property (weak, nonatomic) IBOutlet UIImageView *bottom;
+
 @property (weak, nonatomic) IBOutlet UIImageView *leftCheck;
 @property (weak, nonatomic) IBOutlet UIImageView *rightCheck;
 @property (weak, nonatomic) IBOutlet UILabel *question;
