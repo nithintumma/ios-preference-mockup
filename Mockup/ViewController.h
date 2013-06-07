@@ -7,7 +7,7 @@
 //  as part of Mockup project
 
 #import <UIKit/UIKit.h>
-
+#import <Parse/Parse.h>
 @interface ViewController : UIViewController{
     UIPanGestureRecognizer* gestureRecognizer;
     
@@ -21,8 +21,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *coord;
 
 @property (weak, nonatomic) IBOutlet UIButton *face;
-@property (weak, nonatomic) IBOutlet UIImageView *top;
-@property (weak, nonatomic) IBOutlet UIImageView *bottom;
+@property (weak, nonatomic) IBOutlet PFImageView *top;
+@property (weak, nonatomic) IBOutlet PFImageView *bottom;
 
 @property (weak, nonatomic) IBOutlet UIImageView *leftCheck;
 @property (weak, nonatomic) IBOutlet UIImageView *rightCheck;

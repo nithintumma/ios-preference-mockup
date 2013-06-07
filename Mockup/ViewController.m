@@ -19,6 +19,7 @@
 
 - (void)viewDidLoad
 {
+    [PFImageView class];
     UIPanGestureRecognizer *pangr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
     [self.face addGestureRecognizer:pangr];
     
@@ -148,6 +149,7 @@ int getRand(int max, int old) {
 
 - (void)refresh
 {
+    // figure out how to do it in the cloud, that would be nice
     /*([PFCloud callFunctionInBackground:@"getProducts"
      withParameters:@{@"type": @"shirt"}
      block:^(NSString *result, NSError *error) {
@@ -171,12 +173,37 @@ int getRand(int max, int old) {
      PFQuery *query = [PFQuery queryWithClassName:@"Product"];
      [query whereKey: @"type" equalTo: [PFObject objectWithoutDataWithClassName:@"ProductType" objectId:@"NOXSpiVlla"]];
      [query findObjectsInBackgroundWithBlock: ^(NSArray *results, NSError *error) {
+         NSInteger greeting = arc4random() % 5;
+         int intGreeting = greeting;
+         [self.view addSubview: [[ToastAlert alloc] initWithText: thanks[intGreeting]]];
+         
+         //resets face position
+         CGRect newButtonFrame = self.face.frame;
+         newButtonFrame.origin.x = 120;
+         newButtonFrame.origin.y = 260;
+         self.face.frame = newButtonFrame;
+         
+         //resets checks
+         self.leftCheck.alpha = 0;
+         self.rightCheck.alpha = 0;
+         
+         NSInteger face = arc4random() % 3;
+         int intFace = face;
+         [self.face setImage:[UIImage imageNamed:faces[intFace]] forState:UIControlStateNormal];
+
          NSLog(@"Found products");
+         
+         // get the first object
          PFObject *p_1 = [results objectAtIndex: 0];
+         self.top.file = [p_1 objectForKey:@"image"];
          
          PFObject *p_2 = [results objectAtIndex:1];
+         self.bottom.file = [p_2 objectForKey:@"image"];
+         [self.top loadInBackground];
+         [self.bottom loadInBackground];
+
      }];
-    
+    /*
     //says thanks!
     NSInteger greeting = arc4random() % 5;
     int intGreeting = greeting;
@@ -243,7 +270,7 @@ int getRand(int max, int old) {
     }
     
     
-    
+    */
 }
 
 
