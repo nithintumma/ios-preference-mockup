@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "ToastAlert.h"
+#import <Parse/Parse.h>
 
 @interface ViewController ()
 
@@ -54,14 +55,14 @@
         //assumes center at x=120,y=260 (wrong, but good enough for now)
         //x goes from -60 to 290, y goes from -40 to 430 (roughly, and once again wrong but good enough for now)
         //ranges roughly from 1 at the origin to 0.2 at the edge
-        NSLog(@"X coord: %f", newButtonFrame.origin.x);
-        NSLog(@"Y coord: %f", newButtonFrame.origin.y);
+        //NSLog(@"X coord: %f", newButtonFrame.origin.x);
+        //NSLog(@"Y coord: %f", newButtonFrame.origin.y);
         
         float xdist = powf((1-(fabsf(120-newButtonFrame.origin.x)/180)*.3),2);
         float ydist = powf((1-(fabsf(260-newButtonFrame.origin.y)/250)*.3),2);
         
-        NSLog(@"X damp: %f", xdist);
-        NSLog(@"Y damp: %f", ydist);
+        //NSLog(@"X damp: %f", xdist);
+        //NSLog(@"Y damp: %f", ydist);
         
         //newButtonFrame.origin.x += (translation.x*xdist);
         //newButtonFrame.origin.y += (translation.y*ydist);
@@ -146,6 +147,15 @@ int getRand(int max, int old) {
 
 - (void)refresh
 {
+    [PFCloud callFunctionInBackground:@"getProducts"
+                       withParameters:@{}
+                                block:^(NSString *result, NSError *error) {
+                                    if (!error) {
+                                        NSLog(@"Got the products");
+                                    } else {
+                                        NSLog(@"error while retrieving product");
+                                    }
+                                }];
     //says thanks!
     NSInteger greeting = arc4random() % 5;
     int intGreeting = greeting;
