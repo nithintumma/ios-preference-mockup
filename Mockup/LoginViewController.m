@@ -37,6 +37,7 @@
 }
 
 - (IBAction)loginButtonPushed:(id)sender {
+    NSLog(@"Button pushed");
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
     // login Facebook User

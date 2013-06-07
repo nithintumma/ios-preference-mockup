@@ -256,7 +256,7 @@
     <resources>
         <image name="PAVE.png" width="274" height="65"/>
         <image name="big-circle.png" width="312" height="312"/>
-        <image name="check.png" width="480" height="457"/>
+        <image name="check.png" width="36" height="36"/>
         <image name="connect with.png" width="235" height="33"/>
         <image name="dividing bar.png" width="89" height="3"/>
         <image name="facebook icon.png" width="285" height="285"/>
@@ -266,34 +266,6 @@
         <image name="right-line.png" width="78" height="3"/>
         <image name="top-bar.png" width="640" height="90"/>
     </resources>
-    <classes>
-        <class className="LoginViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginButtonPushed:"/>
-                <relationship kind="outlet" name="activityIndicator" candidateClass="UIActivityIndicatorView"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="ViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="swipeLeft:"/>
-                <relationship kind="action" name="swipeRight:"/>
-                <relationship kind="action" name="touchLeft:"/>
-                <relationship kind="action" name="touchRight:"/>
-                <relationship kind="outlet" name="bottom" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="coord" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="face" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="leftCheck" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="question" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="rightCheck" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="top" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

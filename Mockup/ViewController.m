@@ -149,31 +149,33 @@ int getRand(int max, int old) {
 - (void)refresh
 {
     /*([PFCloud callFunctionInBackground:@"getProducts"
-                       withParameters:@{@"type": @"shirt"}
-                                block:^(NSString *result, NSError *error) {
-                                    if (!error) {
-                                        // the result is a json encoded string
-                                        NSLog(@"%@", result);
-                                        //NSData *data = [NSKeyedArchiver archivedDataWithRootObject:result]; // error occurs here
-                                        //NSData *data = [result dataUsingEncoding:NSUTF8StringEncoding];
-                                        //PFObject *response = [result dataUsingEncoding:NSUTF8StringEncoding];
-                                        NSDictionary *json = [result objectFromJSONString];
-                                        //NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options: kNilOptions error: &error];
-                                        NSLog(@"further");
-                                        PFFile *img_1 = [json objectForKey: @"image"];
-                                    } else {
-                                        NSLog(@"error while retrieving product");
-                                    }
-                                }]; 
+     withParameters:@{@"type": @"shirt"}
+     block:^(NSString *result, NSError *error) {
+     if (!error) {
+     // the result is a json encoded string
+     NSLog(@"%@", result);
+     //NSData *data = [NSKeyedArchiver archivedDataWithRootObject:result]; // error occurs here
+     //NSData *data = [result dataUsingEncoding:NSUTF8StringEncoding];
+     //PFObject *response = [result dataUsingEncoding:NSUTF8StringEncoding];
+     NSDictionary *json = [result objectFromJSONString];
+     //NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options: kNilOptions error: &error];
+     NSLog(@"further");
+     PFFile *img_1 = [json objectForKey: @"image"];
+     } else {
+     NSLog(@"error while retrieving product");
+     }
+     }];
      */
     
-    // do the queries for now becuase the Cloud Code is not working
-//    PFQuery *query = [PFQuery queryWithClassName:@"Product"];
- //   [query whereKey: @"type" equalTo: [PFObject objectWithoutDataWithClassName:@"ProductType" objectId:@"NOXSpiVlla"]];
-//    [query findObjectsInBackgroundWithBlock: ^(NSArray *results, NSError *error) {
- //       PFObject *p_1 = [results objectAtIndex: 0];
-  //      PFObject *p_2 = [results objectAtIndex:1];
-   // } ];
+     // do the queries for now becuase the Cloud Code is not working
+     PFQuery *query = [PFQuery queryWithClassName:@"Product"];
+     [query whereKey: @"type" equalTo: [PFObject objectWithoutDataWithClassName:@"ProductType" objectId:@"NOXSpiVlla"]];
+     [query findObjectsInBackgroundWithBlock: ^(NSArray *results, NSError *error) {
+         NSLog(@"Found products");
+         PFObject *p_1 = [results objectAtIndex: 0];
+         
+         PFObject *p_2 = [results objectAtIndex:1];
+     }];
     
     //says thanks!
     NSInteger greeting = arc4random() % 5;
@@ -198,21 +200,21 @@ int getRand(int max, int old) {
     //to determine what category (movies, music, shirts, shoes) to display
     NSInteger category = arc4random() % 4;
     int intCategory = category;
-            
+    
     switch (intCategory)
     {
-        //for movies
+            //for movies
         case 0:
         {
             int rand1 = getRand(3, -1);
             int rand2 = getRand(3, rand1);
             self.top.image = [UIImage imageNamed:movies[rand1]];
             self.bottom.image = [UIImage imageNamed:movies[rand2]];
-
+            
             break;
         }
-        //for music            
-        case 1:            
+            //for music
+        case 1:
         {
             int rand1 = getRand(4, -1);
             int rand2 = getRand(4, rand1);
@@ -220,8 +222,8 @@ int getRand(int max, int old) {
             self.bottom.image = [UIImage imageNamed:music[rand2]];;
             break;
         }
-        //for shirts            
-        case 2:           
+            //for shirts
+        case 2:
         {
             int rand1 = getRand(3, -1);
             int rand2 = getRand(3, rand1);
@@ -229,7 +231,7 @@ int getRand(int max, int old) {
             self.bottom.image = [UIImage imageNamed:shirts[rand2]];
             break;
         }
-        //for shoes            
+            //for shoes
         default:
         {
             int rand1 = getRand(3, -1);
@@ -241,8 +243,10 @@ int getRand(int max, int old) {
     }
     
     
-
+    
 }
+
+
 
 - (IBAction)swipeRight:(id)sender {
     [self refresh];
