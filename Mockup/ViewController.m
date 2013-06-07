@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "ToastAlert.h"
 #import <Parse/Parse.h>
+#import "JSONKit.h"
 
 @interface ViewController ()
 
@@ -147,15 +148,33 @@ int getRand(int max, int old) {
 
 - (void)refresh
 {
-    [PFCloud callFunctionInBackground:@"getProducts"
-                       withParameters:@{}
+    /*([PFCloud callFunctionInBackground:@"getProducts"
+                       withParameters:@{@"type": @"shirt"}
                                 block:^(NSString *result, NSError *error) {
                                     if (!error) {
-                                        NSLog(@"Got the products");
+                                        // the result is a json encoded string
+                                        NSLog(@"%@", result);
+                                        //NSData *data = [NSKeyedArchiver archivedDataWithRootObject:result]; // error occurs here
+                                        //NSData *data = [result dataUsingEncoding:NSUTF8StringEncoding];
+                                        //PFObject *response = [result dataUsingEncoding:NSUTF8StringEncoding];
+                                        NSDictionary *json = [result objectFromJSONString];
+                                        //NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options: kNilOptions error: &error];
+                                        NSLog(@"further");
+                                        PFFile *img_1 = [json objectForKey: @"image"];
                                     } else {
                                         NSLog(@"error while retrieving product");
                                     }
-                                }];
+                                }]; 
+     */
+    
+    // do the queries for now becuase the Cloud Code is not working
+//    PFQuery *query = [PFQuery queryWithClassName:@"Product"];
+ //   [query whereKey: @"type" equalTo: [PFObject objectWithoutDataWithClassName:@"ProductType" objectId:@"NOXSpiVlla"]];
+//    [query findObjectsInBackgroundWithBlock: ^(NSArray *results, NSError *error) {
+ //       PFObject *p_1 = [results objectAtIndex: 0];
+  //      PFObject *p_2 = [results objectAtIndex:1];
+   // } ];
+    
     //says thanks!
     NSInteger greeting = arc4random() % 5;
     int intGreeting = greeting;

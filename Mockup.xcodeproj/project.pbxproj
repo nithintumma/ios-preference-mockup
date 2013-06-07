@@ -61,6 +61,7 @@
 		B08F64BF17619DBC00DDF992 /* left-line.png in Resources */ = {isa = PBXBuildFile; fileRef = B08F64BE17619DBC00DDF992 /* left-line.png */; };
 		B08F64C117619DCA00DDF992 /* big-circle.png in Resources */ = {isa = PBXBuildFile; fileRef = B08F64C017619DCA00DDF992 /* big-circle.png */; };
 		B08F64C317619DD400DDF992 /* right-line.png in Resources */ = {isa = PBXBuildFile; fileRef = B08F64C217619DD400DDF992 /* right-line.png */; };
+		B08F64C617625FE300DDF992 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B08F64C517625FE300DDF992 /* JSONKit.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +137,8 @@
 		B08F64BE17619DBC00DDF992 /* left-line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left-line.png"; sourceTree = "<group>"; };
 		B08F64C017619DCA00DDF992 /* big-circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "big-circle.png"; sourceTree = "<group>"; };
 		B08F64C217619DD400DDF992 /* right-line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right-line.png"; sourceTree = "<group>"; };
+		B08F64C417625FE300DDF992 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		B08F64C517625FE300DDF992 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +229,8 @@
 		18F0B435175D73980065224E /* Mockup */ = {
 			isa = PBXGroup;
 			children = (
+				B08F64C417625FE300DDF992 /* JSONKit.h */,
+				B08F64C517625FE300DDF992 /* JSONKit.m */,
 				18F0B43E175D73980065224E /* AppDelegate.h */,
 				18F0B43F175D73980065224E /* AppDelegate.m */,
 				18F0B447175D73980065224E /* MainStoryboard_iPhone.storyboard */,
@@ -437,6 +442,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18F0B464175D73990065224E /* MockupTests.m in Sources */,
+				B08F64C617625FE300DDF992 /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
