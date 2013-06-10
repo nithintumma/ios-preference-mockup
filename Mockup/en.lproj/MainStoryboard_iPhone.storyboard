@@ -1,30 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="11E2068" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="ZJs-rE-rCe">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="11E2068" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="aOi-p7-Eke">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--Navigation Controller-->
-        <scene sceneID="Zuh-xK-FRQ">
-            <objects>
-                <navigationController definesPresentationContext="YES" navigationBarHidden="YES" id="ZJs-rE-rCe" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="7PK-aS-jtU">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="n6V-HX-Cjr" kind="relationship" relationship="rootViewController" id="DFw-Ad-XNq"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="C5g-Tk-5jg" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-578" y="188"/>
-        </scene>
         <!--Login View Controller-->
         <scene sceneID="e7B-rz-jkR">
             <objects>
                 <viewController id="n6V-HX-Cjr" customClass="LoginViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" horizontalHuggingPriority="688" id="Eom-vm-av9">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="connect with.png" translatesAutoresizingMaskIntoConstraints="NO" id="7aY-if-0zC">
@@ -47,8 +32,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="loginButtonPushed:" destination="n6V-HX-Cjr" eventType="touchUpInside" id="jgC-zH-jHd"/>
-                                    <segue destination="2" kind="custom" identifier="loginToHomeScreen" id="YxN-fW-cTx"/>
+                                    <action selector="loginButtonTouch:" destination="n6V-HX-Cjr" eventType="touchUpInside" id="M5P-P6-Lxp"/>
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="dividing bar.png" translatesAutoresizingMaskIntoConstraints="NO" id="WzY-uz-t9Z">
@@ -77,10 +61,13 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="PZa-4x-wtX"/>
+                    <connections>
+                        <segue destination="2" kind="custom" identifier="loginToHomeScreen" id="Zgl-4Z-Bfm"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Gm-JI-o2w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-96" y="188"/>
+            <point key="canvasLocation" x="430" y="188"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="5">
@@ -250,7 +237,26 @@
                     </connections>
                 </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="433" y="188"/>
+            <point key="canvasLocation" x="959" y="188"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Z2d-Kg-GE5">
+            <objects>
+                <navigationController id="aOi-p7-Eke" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="RFt-ub-CNu"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="dxI-vQ-62A">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="n6V-HX-Cjr" kind="relationship" relationship="rootViewController" id="dy1-6F-IRX"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="94X-b0-TuO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-96" y="188"/>
         </scene>
     </scenes>
     <resources>
@@ -270,7 +276,7 @@
         <class className="LoginViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
             <relationships>
-                <relationship kind="action" name="loginButtonPushed:"/>
+                <relationship kind="action" name="loginButtonTouch:"/>
                 <relationship kind="outlet" name="activityIndicator" candidateClass="UIActivityIndicatorView"/>
             </relationships>
         </class>
@@ -287,13 +293,13 @@
                 <relationship kind="action" name="swipeRight:"/>
                 <relationship kind="action" name="touchLeft:"/>
                 <relationship kind="action" name="touchRight:"/>
-                <relationship kind="outlet" name="bottom" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="bottom" candidateClass="PFImageView"/>
                 <relationship kind="outlet" name="coord" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="face" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="leftCheck" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="question" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="rightCheck" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="top" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="top" candidateClass="PFImageView"/>
             </relationships>
         </class>
     </classes>

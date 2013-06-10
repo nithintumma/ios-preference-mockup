@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import "ToastAlert.h"
 #import <Parse/Parse.h>
-#import "JSONKit.h"
 
 @interface ViewController ()
 
@@ -149,6 +148,8 @@ int getRand(int max, int old) {
 
 - (void)refresh
 {
+    PFUser *current = [PFUser currentUser];
+    NSLog(@"Object id %@",[current objectId]);
     // figure out how to do it in the cloud, that would be nice
     /*([PFCloud callFunctionInBackground:@"getProducts"
      withParameters:@{@"type": @"shirt"}
@@ -168,9 +169,26 @@ int getRand(int max, int old) {
      }
      }];
      */
+    // choose a facebook friend at random and get their profile picture
     
+    // get the friends from database
+    NSLog(@"Before facebook request");
+    NSArray *facebookFriends = [[PFUser currentUser] objectForKey: @"friends"];
+    for (NSString *friend in facebookFriends) {
+        NSLog(@"found friend");
+    }
+    NSLog(@"about to print friends");
+    NSLog(@"%@", facebookFriends);
+    NSInteger friendCount = [facebookFriends count];
+    //NSInteger randomFriend = arc4random() % friendCount;
+    //NSString *friendID = [facebookFriends objectAtIndex:randomFriend];
+    NSLog(@"%i", friendCount);
+    //["7055","214006","304301","306607","506526","615917","704345","7934730","36502348","500535903","500828398"
      // do the queries for now becuase the Cloud Code is not working
      PFQuery *query = [PFQuery queryWithClassName:@"Product"];
+    // get random products
+    // for each product type keep track of product_count, for a given product type generate random number
+    
      [query whereKey: @"type" equalTo: [PFObject objectWithoutDataWithClassName:@"ProductType" objectId:@"NOXSpiVlla"]];
      [query findObjectsInBackgroundWithBlock: ^(NSArray *results, NSError *error) {
          NSInteger greeting = arc4random() % 5;
@@ -272,7 +290,6 @@ int getRand(int max, int old) {
     
     */
 }
-
 
 
 - (IBAction)swipeRight:(id)sender {

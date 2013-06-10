@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface LoginViewController : UIViewController
-- (IBAction)loginButtonPushed:(id)sender;
+- (IBAction)loginButtonTouch:(id)sender;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
-
+@property (nonatomic, assign) BOOL loggedIn;
 @end

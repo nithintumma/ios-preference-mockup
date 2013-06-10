@@ -48,5 +48,21 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [PFFacebookUtils handleOpenURL:url];
+}
+
+- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
+    NSArray *permissions = [NSArray arrayWithObjects:@"publish_actions", nil];
+    return [FBSession openActiveSessionWithPermissions:permissions
+                                          allowLoginUI:allowLoginUI
+                                     completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+                                         if(state==513){
+                                             //[AppPrefererences sharedAppPrefererences].faceBookEnabled=YES;
+                                         }
+                                     }];
+}
+
 
 @end
