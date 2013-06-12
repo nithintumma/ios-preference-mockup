@@ -34,9 +34,38 @@
     
     // if the session isn't open, let's open it now and present the login UX to the user
     //if (!FBSession.activeSession.isOpen) {
-    if (session.state == FBSessionStateCreatedTokenLoaded || session.state == FBSessionStateOpen || session.state == FBSessionStateOpenTokenExtended) {
+    if (session.state == FBSessionStateCreatedTokenLoaded) {
         NSLog(@"Already in");
-        [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
+        
+        //now opens connection
+        [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
+            NSLog(@"In login block");
+            [FBSession setActiveSession:session];
+            if (status == FBSessionStateOpen) {
+                [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
+                
+                
+                NSLog(@"Open?: ");
+                NSLog(session.isOpen ? @"Yes" : @"No");
+                NSString* accessToken = session.accessToken;
+                [KCSUser loginWithWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
+                    NSLog(@"Finished login");
+                    
+                    NSLog(@"Accesstoken: %@", accessToken);
+                    
+                    
+                    
+                }];
+                
+                
+            }
+            else
+            {
+                NSLog(@"something happened");
+                NSLog(@"Some other status: %@", status);
+            }
+        }];
+        
     }
     else
     {
