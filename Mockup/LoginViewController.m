@@ -30,15 +30,17 @@
     FBSession* session = delegate.session;
     
     NSLog(@"Session is: %@", session);
+    NSLog(@"Session is: %@", FBSession.activeSession);
     
     // if the session isn't open, let's open it now and present the login UX to the user
-    if (!FBSession.activeSession.isOpen) {
-        NSLog(@"Not open yet, so not skipping login");
+    //if (!FBSession.activeSession.isOpen) {
+    if (session.state == FBSessionStateCreatedTokenLoaded || session.state == FBSessionStateOpen || session.state == FBSessionStateOpenTokenExtended) {
+        NSLog(@"Already in");
+        [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
     }
     else
     {
-        NSLog(@"Already in");
-        [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
+        NSLog(@"Not open yet, so not skipping login");        
     }
     
     /*if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
@@ -321,9 +323,8 @@
     
     [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
         NSLog(@"In login block");
-        
+        [FBSession setActiveSession:session];
         if (status == FBSessionStateOpen) {
-            NSLog(@"%@", error);
             NSLog(@"Open?: ");
             NSLog(session.isOpen ? @"Yes" : @"No");
             NSString* accessToken = session.accessToken;
@@ -331,7 +332,7 @@
                 NSLog(@"Finished login");
                 
                 NSLog(@"Accesstoken: %@", accessToken);
-                [FBSession setActiveSession:session];
+
                 
                 //saves and updates data
                 [self initializeFacebookInformation];

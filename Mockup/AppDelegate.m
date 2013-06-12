@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
 #import <KinveyKit/KinveyKit.h>
+#include <FacebookSDK/FacebookSDK.h>
 
 @implementation AppDelegate
 
@@ -28,9 +29,10 @@
     
     //NOTE: the FB APP ID also has to go in the url scheme in StatusShare-Info.plist so the FB callback has a place to go
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
+    self.session = [[FBSession alloc] initWithAppID:@"545929018807731" permissions:permissionsArray defaultAudience:nil urlSchemeSuffix:nil tokenCacheStrategy:nil];
     //self.session = [[FBSession alloc] initWithAppID:@"545929018807731"
     //                                    permissions:permissionsArray];
-    self.session = [[FBSession alloc] initWithPermissions:permissionsArray];
+    //self.session = [[FBSession alloc] initWithPermissions:permissionsArray];
     
     
     // setup facebook
