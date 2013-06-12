@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import <KinveyKit/KinveyKit.h>
 
 @implementation AppDelegate
 
@@ -16,9 +17,16 @@
     // Override point for customization after application launch.
     [Parse setApplicationId:@"dMu8BAni6T7g63aDFCkO6nQaqvtBzh1FRm5PdQr7"
                   clientKey:@"ucz4eTFV2nD1r3EuUhTXX0eHyi0JIuz5nSL42vVm"];
+    // setup Kinvey
+    (void) [[KCSClient sharedClient] initializeKinveyServiceForAppKey:@"kid_eVc8Xpzat5"
+                                                        withAppSecret:@"5ebd3508b6a3442cb2671280eef4fa18"
+                                                         usingOptions:nil];
     // setup facebook
     [PFFacebookUtils initializeFacebook];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    [FBProfilePictureView class];
+
     return YES;
 }
 							

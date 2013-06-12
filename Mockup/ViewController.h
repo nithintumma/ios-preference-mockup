@@ -21,9 +21,42 @@
 }
 @property (weak, nonatomic) IBOutlet UILabel *coord;
 
-@property (weak, nonatomic) IBOutlet UIButton *face;
+@property (weak, nonatomic) IBOutlet FBProfilePictureView *face;
+@property (weak, nonatomic) IBOutlet FBProfilePictureView *face2;
+@property (weak, nonatomic) IBOutlet FBProfilePictureView *face3;
 @property (weak, nonatomic) IBOutlet PFImageView *top;
 @property (weak, nonatomic) IBOutlet PFImageView *bottom;
+@property (weak, nonatomic) IBOutlet PFImageView *top2;
+@property (weak, nonatomic) IBOutlet PFImageView *bottom2;
+@property (weak, nonatomic) IBOutlet PFImageView *top3;
+@property (weak, nonatomic) IBOutlet PFImageView *bottom3;
+
+// store the values of the required instance variables 
+@property (weak, nonatomic) NSMutableArray *topProductIds;
+@property (weak, nonatomic) NSMutableArray *bottomProductIds;
+@property (weak, nonatomic) NSMutableArray *friendFacebookIds;
+@property (weak, nonatomic) NSMutableArray *questionObjectIds;
+
+@property (weak, nonatomic) NSString *currentTopProductId;
+@property (weak, nonatomic) NSString *currentBottomProductId;
+
+// keeps track of which PFImageView is Hidden
+@property (nonatomic, assign) NSInteger front;
+
+// properties to hold the next product and friend
+@property (weak, nonatomic) PFFile *nextTopImage;
+@property (weak, nonatomic) PFFile *nextBottomImage;
+@property (weak, nonatomic) NSString *nextTopProductId;
+@property (weak, nonatomic) NSString *nextBottomId;
+@property (weak, nonatomic) NSString *nextFriendFacebokId;
+@property (weak, nonatomic) NSString *nextFriendName;
+@property (weak, nonatomic) NSString *nextFriendGender;
+
+// set to YES when background job completes needs to be locked
+@property (nonatomic, assign) BOOL doneLoading;
+@property (nonatomic, assign) BOOL profilePicDidLoad;
+@property (nonatomic, assign) BOOL productsDidLoad;
+
 
 @property (weak, nonatomic) IBOutlet UIImageView *leftCheck;
 @property (weak, nonatomic) IBOutlet UIImageView *rightCheck;

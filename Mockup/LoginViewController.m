@@ -34,28 +34,42 @@
 
 - (void) initializeFacebookInformation
 {
+    NSLog(@"Got called");
     // get basic user information and 
     FBRequest *request = [FBRequest requestForMe];
-    FBRequest* friendsRequest = [FBRequest requestForMyFriends];
-    [friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,
-                                                  NSDictionary* result,
-                                                  NSError *error) {
-        if (!error) {
-        NSArray* friends = [result objectForKey:@"data"];
-        NSMutableArray *ids = [[NSMutableArray alloc] initWithCapacity: [friends count]];
-        
-        for (NSDictionary<FBGraphUser>* friend in friends) {
-            [ids addObject: friend.id];
-        }
-            
-        [[PFUser currentUser] setObject:ids forKey:@"friends"];
-        [[PFUser currentUser] saveInBackground];
-        } else {
-            NSLog(@"Error while getting facebook friends");
-        }
-        
-    }];
-    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+    NSString *query =
+    @"SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY mutual_friend_count DESC";
+    // Set up the query parameter
+    NSDictionary *queryParam = [NSDictionary dictionaryWithObjectsAndKeys:query, @"q", nil];
+    // Make the API request that uses FQL
+    [FBRequestConnection startWithGraphPath:@"/fql"
+                                 parameters:queryParam
+                                 HTTPMethod:@"GET"
+                          completionHandler:^(FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error) {
+                              if (error) {
+                                  NSLog(@"Error while getting facebook friends");
+                              } else {
+                                  //creates a dict of ids
+                                  NSMutableArray *ids = [[NSMutableArray alloc] initWithCapacity: [result count]];
+                                  
+                                  NSArray *parsed = result[@"data"];
+                                  for(id object in parsed)
+                                  {
+                                      //NSLog(@"Current: %@", object);
+                                      [ids addObject: object[@"uid"]];
+                                  }
+                                  
+                                  //NSLog(@"IDs: %@", ids);
+                                  
+                                  //saves
+                                  [[PFUser currentUser] setObject:ids forKey:@"friends"];
+                                  [[PFUser currentUser] saveInBackground];
+                                  
+                              }
+                          }];
+        [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         // handle response
         if (!error) {
             // Parse the data received

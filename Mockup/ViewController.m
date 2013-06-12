@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "ToastAlert.h"
 #import <Parse/Parse.h>
+#import <KinveyKit/KinveyKit.h>
 
 @interface ViewController ()
 
@@ -18,23 +19,21 @@
 
 - (void)viewDidLoad
 {
+    self.front = 0;
     [PFImageView class];
     UIPanGestureRecognizer *pangr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    UIPanGestureRecognizer *pangr2 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    UIPanGestureRecognizer *pangr3 = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
     [self.face addGestureRecognizer:pangr];
+    [self.face2 addGestureRecognizer:pangr2];
+    [self.face3 addGestureRecognizer:pangr3];
     
     [super viewDidLoad];
     
-    //initalizing all arrays
-    thanks = [[NSArray alloc] initWithObjects:@"Thanks!",@"Good taste!",@"Haha, you're right!",@"Wow, you're good!",@"Crispy!", nil];
-    faces = [[NSArray alloc] initWithObjects:@"neel.jpg",@"nithin.jpg",@"james.jpg", nil];
-    movies = [[NSArray alloc] initWithObjects:@"after_earth.jpg",@"fast6.jpg",@"internship.jpg", nil];
-    music = [[NSArray alloc] initWithObjects:@"florida_georgia_line.jpg",@"macklemore.jpg",@"pink.jpg", @"timberlake.jpg", nil];
-    shirts = [[NSArray alloc] initWithObjects:@"jcrew.jpg",@"polo.jpg",@"vneck.jpg", nil];
-    shoes = [[NSArray alloc] initWithObjects:@"airforce.jpg",@"cole_haan.jpg",@"sperry.jpg", nil];
-    
     //starts it off for the first time
-    [self refresh];
-    
+    [self reloadIntoBackground];
+    [self reloadIntoBackground];
+    [self reloadIntoBackground];
     
 }
 
@@ -146,149 +145,165 @@ int getRand(int max, int old) {
     return random;
 }
 
+// gets a new friend and a new
+-(void) reloadIntoBackground
+{
+    // set indicators to false
+    self.profilePicDidLoad = NO;
+    self.productsDidLoad = NO;
+    
+    // init the current image holder
+    PFImageView *next_top = self.top;
+    PFImageView *next_bottom = self.bottom;
+    FBProfilePictureView *next_face = self.face;
+    if (self.front == 0){
+        next_top = self.top;
+        next_bottom = self.bottom;
+        next_face = self.face;
+        
+        // change the top image
+        self.front = 1;
+    }
+    else if (self.front == 1)
+    {
+        next_top = self.top2;
+        next_bottom = self.bottom2;
+        next_face = self.face2;
+        
+        // change the top image
+        self.front = 2;
+    }
+    else
+    {
+        next_top = self.top3;
+        next_bottom = self.bottom3;
+        next_face = self.face3;
+        
+        // change the top image
+        self.front = 0;
+    }
+            
+    NSString *currentId = [[PFUser currentUser] objectId];
+    
+    //_store = [KCSAppdataStore storeWithOptions:@{KCSStoreKeyCollectionName: @"Events", }];
+
+    [KCSCustomEndpoints callEndpoint:@"getRandomProducts" params: nil completionBlock:^(id results, NSError *error) {
+        if (results) {
+            //NSLog(@"%@", results);
+            NSLog(@"worked");
+        } else {
+            NSLog(@"error while downloading products from getRandomProducts %@", error);
+        }
+    }];
+    
+    /*
+    // get random friend from the cloud
+    ([PFCloud callFunctionInBackground:@"getRandomFriend"
+                        withParameters:@{@"id": currentId}
+                                 block:^(NSString *result, NSError *error) {
+                                     if (!error) {
+                                         // the result is a json encoded string
+                                         //NSLog(@"Result in get rand friend is %@", result);
+                                         next_face.profileID = result;
+                                         //NSLog(@"Just finished profile");
+                                         @synchronized(self) {
+                                             // do the array shit here
+                                             self.friendFacebookIds[((self.front - 1) % 3)] = result;
+                                         }
+                                         
+                                     } else {
+                                         NSLog(@"error while retrieving random friend");
+                                     }
+                                     @synchronized(self){
+                                         self.profilePicDidLoad = YES;
+                                     }
+                                 }]);
+    
+    // get products from the cloud and load them
+    [PFCloud callFunctionInBackground:@"getProducts"
+                       withParameters:@{@"type": @"male_shoe"}
+                                block:^(NSDictionary *result, NSError *error) {
+                                    if (!error) {
+                                        // the result is a json encoded string
+                                        self.nextTopProductId = result[@"id_1"];
+                                        self.nextBottomId = result[@"id_2"];
+                                        next_top.file = result[@"img_1"];
+                                        next_bottom.file = result[@"img_2"];
+                                        // async load 
+                                        [next_top loadInBackground];
+                                        [next_bottom loadInBackground];
+                                        @synchronized(self) {
+                                            // do the array shit here 
+                                            self.topProductIds[((self.front - 1) % 3)] = result[@"id_1"];
+                                            self.bottomProductIds[((self.front - 1) % 3)] = result[@"id_2"];
+                                            self.questionObjectIds[((self.front - 1) % 3)] = result[@"question_id"];
+                                        }
+                                    } else {
+                                        NSLog(@"error while retrieving product");
+                                    }
+                                    @synchronized(self) {
+                                        self.productsDidLoad = YES;
+                                    }
+                                }];
+    */
+}
+
+-(void) createAnswerForCurrentProducts
+{
+    // create the answer and save to Parse in background
+}
+
+-(void) waitUntilLoad
+{
+    NSLog(@"Waiting");
+    // add activity monitor animation
+    
+    // wait for 0.1 seconds and then recall refresh
+    [self performSelector:@selector(refresh) withObject:self afterDelay:0.01];
+}
+
+// called everytime a new
 - (void)refresh
 {
-    PFUser *current = [PFUser currentUser];
-    NSLog(@"Object id %@",[current objectId]);
-    // figure out how to do it in the cloud, that would be nice
-    /*([PFCloud callFunctionInBackground:@"getProducts"
-     withParameters:@{@"type": @"shirt"}
-     block:^(NSString *result, NSError *error) {
-     if (!error) {
-     // the result is a json encoded string
-     NSLog(@"%@", result);
-     //NSData *data = [NSKeyedArchiver archivedDataWithRootObject:result]; // error occurs here
-     //NSData *data = [result dataUsingEncoding:NSUTF8StringEncoding];
-     //PFObject *response = [result dataUsingEncoding:NSUTF8StringEncoding];
-     NSDictionary *json = [result objectFromJSONString];
-     //NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options: kNilOptions error: &error];
-     NSLog(@"further");
-     PFFile *img_1 = [json objectForKey: @"image"];
-     } else {
-     NSLog(@"error while retrieving product");
-     }
-     }];
-     */
-    // choose a facebook friend at random and get their profile picture
+    //NSLog(@"pro pic is:");
+    //NSLog(self.profilePicDidLoad ? @"Yes" : @"No");
+    //NSLog(@"products is:");
+    //NSLog(self.productsDidLoad ? @"Yes" : @"No");
     
-    // get the friends from database
-    NSLog(@"Before facebook request");
-    NSArray *facebookFriends = [[PFUser currentUser] objectForKey: @"friends"];
-    for (NSString *friend in facebookFriends) {
-        NSLog(@"found friend");
-    }
-    NSLog(@"about to print friends");
-    NSLog(@"%@", facebookFriends);
-    NSInteger friendCount = [facebookFriends count];
-    //NSInteger randomFriend = arc4random() % friendCount;
-    //NSString *friendID = [facebookFriends objectAtIndex:randomFriend];
-    NSLog(@"%i", friendCount);
-    //["7055","214006","304301","306607","506526","615917","704345","7934730","36502348","500535903","500828398"
-     // do the queries for now becuase the Cloud Code is not working
-     PFQuery *query = [PFQuery queryWithClassName:@"Product"];
-    // get random products
-    // for each product type keep track of product_count, for a given product type generate random number
-    
-     [query whereKey: @"type" equalTo: [PFObject objectWithoutDataWithClassName:@"ProductType" objectId:@"NOXSpiVlla"]];
-     [query findObjectsInBackgroundWithBlock: ^(NSArray *results, NSError *error) {
-         NSInteger greeting = arc4random() % 5;
-         int intGreeting = greeting;
-         [self.view addSubview: [[ToastAlert alloc] initWithText: thanks[intGreeting]]];
-         
-         //resets face position
-         CGRect newButtonFrame = self.face.frame;
-         newButtonFrame.origin.x = 120;
-         newButtonFrame.origin.y = 260;
-         self.face.frame = newButtonFrame;
-         
-         //resets checks
-         self.leftCheck.alpha = 0;
-         self.rightCheck.alpha = 0;
-         
-         NSInteger face = arc4random() % 3;
-         int intFace = face;
-         [self.face setImage:[UIImage imageNamed:faces[intFace]] forState:UIControlStateNormal];
-
-         NSLog(@"Found products");
-         
-         // get the first object
-         PFObject *p_1 = [results objectAtIndex: 0];
-         self.top.file = [p_1 objectForKey:@"image"];
-         
-         PFObject *p_2 = [results objectAtIndex:1];
-         self.bottom.file = [p_2 objectForKey:@"image"];
-         [self.top loadInBackground];
-         [self.bottom loadInBackground];
-
-     }];
-    /*
-    //says thanks!
-    NSInteger greeting = arc4random() % 5;
-    int intGreeting = greeting;
-    [self.view addSubview: [[ToastAlert alloc] initWithText: thanks[intGreeting]]];
-    
-    //resets face position
-    CGRect newButtonFrame = self.face.frame;
-    newButtonFrame.origin.x = 120;
-    newButtonFrame.origin.y = 260;
-    self.face.frame = newButtonFrame;
-    
-    //resets checks
-    self.leftCheck.alpha = 0;
-    self.rightCheck.alpha = 0;
-    
-    //to determine whose face to show
-    NSInteger face = arc4random() % 3;
-    int intFace = face;
-    [self.face setImage:[UIImage imageNamed:faces[intFace]] forState:UIControlStateNormal];
-    
-    //to determine what category (movies, music, shirts, shoes) to display
-    NSInteger category = arc4random() % 4;
-    int intCategory = category;
-    
-    switch (intCategory)
-    {
-            //for movies
-        case 0:
-        {
-            int rand1 = getRand(3, -1);
-            int rand2 = getRand(3, rand1);
-            self.top.image = [UIImage imageNamed:movies[rand1]];
-            self.bottom.image = [UIImage imageNamed:movies[rand2]];
-            
-            break;
-        }
-            //for music
-        case 1:
-        {
-            int rand1 = getRand(4, -1);
-            int rand2 = getRand(4, rand1);
-            self.top.image = [UIImage imageNamed:music[rand1]];
-            self.bottom.image = [UIImage imageNamed:music[rand2]];;
-            break;
-        }
-            //for shirts
-        case 2:
-        {
-            int rand1 = getRand(3, -1);
-            int rand2 = getRand(3, rand1);
-            self.top.image = [UIImage imageNamed:shirts[rand1]];
-            self.bottom.image = [UIImage imageNamed:shirts[rand2]];
-            break;
-        }
-            //for shoes
-        default:
-        {
-            int rand1 = getRand(3, -1);
-            int rand2 = getRand(3, rand1);
-            self.top.image = [UIImage imageNamed:shoes[rand1]];
-            self.bottom.image = [UIImage imageNamed:shoes[rand2]];
-            break;
-        }
+    // hide the appropriate variables
+    if (self.profilePicDidLoad && self.productsDidLoad) {
+        
+        [self reloadIntoBackground];
+        
+        self.top.hidden = (self.front != 0);
+        self.bottom.hidden = (self.front != 0);
+        self.face.hidden = (self.front != 0);
+        self.top2.hidden = (self.front != 1);
+        self.bottom2.hidden = (self.front != 1);
+        self.face2.hidden = (self.front != 1);
+        self.top3.hidden = (self.front != 2);
+        self.bottom3.hidden = (self.front != 2);
+        self.face3.hidden = (self.front != 2);
+        
+        
+        NSInteger greeting = arc4random() % 5;
+        int intGreeting = greeting;
+        [self.view addSubview: [[ToastAlert alloc] initWithText: thanks[intGreeting]]];
+        
+        //resets face position
+        CGRect newButtonFrame = self.face.frame;
+        newButtonFrame.origin.x = 120;
+        newButtonFrame.origin.y = 260;
+        self.face.frame = newButtonFrame;
+        
+        //resets checks
+        self.leftCheck.alpha = 0;
+        self.rightCheck.alpha = 0;
+        
+    } else {
+        [self waitUntilLoad];
     }
     
-    
-    */
 }
 
 
@@ -308,3 +323,5 @@ int getRand(int max, int old) {
     [self refresh];
 }
 @end
+
+// need to figure out what the current object id's are 
