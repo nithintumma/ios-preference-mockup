@@ -10,15 +10,21 @@
 #import "ToastAlert.h"
 #import <Parse/Parse.h>
 #import <KinveyKit/KinveyKit.h>
+#import <QuartzCore/QuartzCore.h> 
+
+#import "AppDelegate.h"
 
 @interface ViewController ()
 
 @end
 
 @implementation ViewController
+@synthesize loginButton;
+
 
 - (void)viewDidLoad
 {
+    NSLog(@"in ViewController");
     self.front = 0;
     [PFImageView class];
     UIPanGestureRecognizer *pangr = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
@@ -43,6 +49,45 @@
     // Dispose of any resources that can be recreated.
 }
 
+//facebook stuff
+- (void) handeLogin:(NSError*)errorOrNil
+{
+    if (errorOrNil != nil) {
+         NSLog(@"FB shit didn't work :(((");
+    } else {
+        NSLog(@"FB shit worked!");
+    }
+    
+}
+
+- (IBAction)loginWithFacebook:(id)sender
+{
+    NSLog(@"In login w fb");
+    
+    AppDelegate* delegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    FBSession* session = [delegate session];
+
+    // if the session isn't open, let's open it now and present the login UX to the user
+    if (!session.isOpen) {
+        [session openWithCompletionHandler:^(FBSession *session,
+                                             FBSessionState status,
+                                             NSError *error) {
+            if (status == FBSessionStateOpen) {
+                NSString* accessToken = session.accessToken;
+                [KCSUser loginWithWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
+                    [self handeLogin:errorOrNil];
+                }];
+            }
+        }];
+    }
+    else
+    {
+        NSLog(@"Already in");
+    }
+}
+
+//end of Facebook stuff
+
 - (void)pan:(UIPanGestureRecognizer *)recognizer
 {
     if (recognizer.state == UIGestureRecognizerStateChanged) {
@@ -58,8 +103,8 @@
         //NSLog(@"X coord: %f", newButtonFrame.origin.x);
         //NSLog(@"Y coord: %f", newButtonFrame.origin.y);
         
-        float xdist = powf((1-(fabsf(120-newButtonFrame.origin.x)/180)*.3),2);
-        float ydist = powf((1-(fabsf(260-newButtonFrame.origin.y)/250)*.3),2);
+        float xdist = powf((1-(fabsf(108-newButtonFrame.origin.x)/180)*.3),2);
+        float ydist = powf((1-(fabsf(237-newButtonFrame.origin.y)/250)*.3),2);
         
         //NSLog(@"X damp: %f", xdist);
         //NSLog(@"Y damp: %f", ydist);
@@ -74,16 +119,20 @@
         
         //sets a slightly opaque checkmark over the right image
         
+        NSLog(@"X dist: %f", xdist);
+        NSLog(@"y dist: %f", ydist);
+        
+        
         //if we're on the top
-        if(newButtonFrame.origin.y < 260)
+        if(newButtonFrame.origin.y < 237)
         {
-            self.leftCheck.alpha = 1.5 - xdist;
+            self.leftCheck.alpha = 1.5 - ydist;
             self.rightCheck.alpha = 0;
         }
         else
         {
             self.leftCheck.alpha = 0;
-            self.rightCheck.alpha = 1.5 - xdist;
+            self.rightCheck.alpha = 1.5 - ydist;
         }
         
         
@@ -99,7 +148,7 @@
         CGRect newButtonFrame = draggedButton.frame;
         
         //float dist = powf(120-newButtonFrame.origin.x,2) + powf(164-newButtonFrame.origin.y,2);
-        float dist = powf(260-newButtonFrame.origin.y,2);
+        float dist = powf(237-newButtonFrame.origin.y,2);
 
         
         NSLog(@"Distance: %f", dist);
@@ -108,7 +157,7 @@
         if(dist > 5000)
         {
             //if we're on top
-            if(newButtonFrame.origin.y < 260)
+            if(newButtonFrame.origin.y < 237)
             {
                 newButtonFrame.origin.y = -80;
             }
@@ -125,8 +174,8 @@
             self.leftCheck.alpha = 0;
             self.rightCheck.alpha = 0;
             
-            newButtonFrame.origin.x = 120;
-            newButtonFrame.origin.y = 260;
+            newButtonFrame.origin.x = 108;
+            newButtonFrame.origin.y = 237;
             draggedButton.frame = newButtonFrame;
         }
                 
@@ -144,6 +193,7 @@ int getRand(int max, int old) {
     }
     return random;
 }
+
 
 // gets a new friend and a new
 -(void) reloadIntoBackground
@@ -184,18 +234,7 @@ int getRand(int max, int old) {
     }
             
     NSString *currentId = [[PFUser currentUser] objectId];
-    
-    //_store = [KCSAppdataStore storeWithOptions:@{KCSStoreKeyCollectionName: @"Events", }];
-
-    [KCSCustomEndpoints callEndpoint:@"getRandomProducts" params: nil completionBlock:^(id results, NSError *error) {
-        if (results) {
-            //NSLog(@"%@", results);
-            NSLog(@"worked");
-        } else {
-            NSLog(@"error while downloading products from getRandomProducts %@", error);
-        }
-    }];
-    
+        
     /*
     // get random friend from the cloud
     ([PFCloud callFunctionInBackground:@"getRandomFriend"
@@ -204,19 +243,17 @@ int getRand(int max, int old) {
                                      if (!error) {
                                          // the result is a json encoded string
                                          //NSLog(@"Result in get rand friend is %@", result);
-                                         next_face.profileID = result;
-                                         //NSLog(@"Just finished profile");
-                                         @synchronized(self) {
-                                             // do the array shit here
-                                             self.friendFacebookIds[((self.front - 1) % 3)] = result;
-                                         }
-                                         
+                                         next_face.profileID = [NSString stringWithFormat:@"%@", result];;
+                                         next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
+                                         next_face.layer.masksToBounds = YES;
+                                         //next_face.profileID = @"1234";
+                                         //NSLog(@"Just finished profile");                                                                                  
                                      } else {
                                          NSLog(@"error while retrieving random friend");
                                      }
-                                     @synchronized(self){
-                                         self.profilePicDidLoad = YES;
-                                     }
+                                     
+                                     self.profilePicDidLoad = YES;
+                                     
                                  }]);
     
     // get products from the cloud and load them
@@ -225,25 +262,32 @@ int getRand(int max, int old) {
                                 block:^(NSDictionary *result, NSError *error) {
                                     if (!error) {
                                         // the result is a json encoded string
-                                        self.nextTopProductId = result[@"id_1"];
-                                        self.nextBottomId = result[@"id_2"];
+                                        //self.nextTopProductId = result[@"id_1"];
+                                        //self.nextBottomId = result[@"id_2"];
                                         next_top.file = result[@"img_1"];
                                         next_bottom.file = result[@"img_2"];
+                                        
+                                        //rounds corners
+                                        next_top.layer.cornerRadius = 120;
+                                        next_top.layer.masksToBounds = YES;
+                                        next_bottom.layer.cornerRadius = 120;
+                                        next_bottom.layer.masksToBounds = YES;
+                                        
                                         // async load 
                                         [next_top loadInBackground];
                                         [next_bottom loadInBackground];
-                                        @synchronized(self) {
+
                                             // do the array shit here 
-                                            self.topProductIds[((self.front - 1) % 3)] = result[@"id_1"];
-                                            self.bottomProductIds[((self.front - 1) % 3)] = result[@"id_2"];
-                                            self.questionObjectIds[((self.front - 1) % 3)] = result[@"question_id"];
-                                        }
+                                            //self.topProductIds[((self.front - 1) % 3)] = result[@"id_1"];
+                                            //self.bottomProductIds[((self.front - 1) % 3)] = result[@"id_2"];
+                                            //self.questionObjectIds[((self.front - 1) % 3)] = result[@"question_id"];
+
                                     } else {
                                         NSLog(@"error while retrieving product");
                                     }
-                                    @synchronized(self) {
-                                        self.productsDidLoad = YES;
-                                    }
+
+                                    self.productsDidLoad = YES;
+
                                 }];
     */
 }
@@ -292,8 +336,8 @@ int getRand(int max, int old) {
         
         //resets face position
         CGRect newButtonFrame = self.face.frame;
-        newButtonFrame.origin.x = 120;
-        newButtonFrame.origin.y = 260;
+        newButtonFrame.origin.x = 108;
+        newButtonFrame.origin.y = 237;
         self.face.frame = newButtonFrame;
         
         //resets checks

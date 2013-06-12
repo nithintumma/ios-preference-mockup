@@ -61,11 +61,13 @@
 @property (weak, nonatomic) IBOutlet UIImageView *leftCheck;
 @property (weak, nonatomic) IBOutlet UIImageView *rightCheck;
 @property (weak, nonatomic) IBOutlet UILabel *question;
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
 
 - (IBAction)swipeRight:(id)sender;
 - (IBAction)swipeLeft:(id)sender;
 - (IBAction)touchLeft:(id)sender;
 - (IBAction)touchRight:(id)sender;
+- (IBAction)loginWithFacebook:(id)sender;
 
 
 @end

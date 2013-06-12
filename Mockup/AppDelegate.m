@@ -12,24 +12,36 @@
 
 @implementation AppDelegate
 
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     [Parse setApplicationId:@"dMu8BAni6T7g63aDFCkO6nQaqvtBzh1FRm5PdQr7"
                   clientKey:@"ucz4eTFV2nD1r3EuUhTXX0eHyi0JIuz5nSL42vVm"];
     // setup Kinvey
+    //Kinvey use code: You'll need to create an app on the backend and initialize it here:
+    //http://docs.kinvey.com/ios-developers-guide.html#Initializing_Programmatically
     (void) [[KCSClient sharedClient] initializeKinveyServiceForAppKey:@"kid_eVc8Xpzat5"
                                                         withAppSecret:@"5ebd3508b6a3442cb2671280eef4fa18"
                                                          usingOptions:nil];
+    
+    
+    //NOTE: the FB APP ID also has to go in the url scheme in StatusShare-Info.plist so the FB callback has a place to go
+    NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
+    //self.session = [[FBSession alloc] initWithAppID:@"545929018807731"
+    //                                    permissions:permissionsArray];
+    self.session = [[FBSession alloc] initWithPermissions:permissionsArray];
+    
+    
     // setup facebook
-    [PFFacebookUtils initializeFacebook];
+    //[PFFacebookUtils initializeFacebook];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     [FBProfilePictureView class];
 
     return YES;
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -56,6 +68,21 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    // attempt to extract a token from the url
+    return [self.session handleOpenURL:url];
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return [FBSession.activeSession handleOpenURL:url];
+}
+
+/*
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [PFFacebookUtils handleOpenURL:url];
@@ -71,6 +98,6 @@
                                          }
                                      }];
 }
-
+*/
 
 @end
