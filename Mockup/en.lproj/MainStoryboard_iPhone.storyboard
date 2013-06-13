@@ -287,6 +287,7 @@
                         <outlet property="face2" destination="RqF-pK-yA2" id="xQn-Tn-u65"/>
                         <outlet property="face3" destination="1g7-dI-GiY" id="1cy-BW-ukf"/>
                         <outlet property="leftCheck" destination="TGj-z2-ktj" id="OZd-3R-R5u"/>
+                        <outlet property="question_label" destination="UDL-Rt-ZgT" id="QBT-y1-Fld"/>
                         <outlet property="rightCheck" destination="Abc-M6-LVn" id="mdW-is-R52"/>
                         <outlet property="top" destination="HXh-9W-pSn" id="14E-2n-KPG"/>
                         <outlet property="top2" destination="3pF-4M-Z28" id="wEI-tu-Sq2"/>
@@ -342,48 +343,6 @@
         <image name="social_feed_icon.png" width="68" height="68"/>
         <image name="top_bar.png" width="640" height="99"/>
     </resources>
-    <classes>
-        <class className="FBProfilePictureView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FBProfilePictureView.h"/>
-        </class>
-        <class className="LoginViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginButtonTouch:"/>
-                <relationship kind="outlet" name="activityIndicator" candidateClass="UIActivityIndicatorView"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="PFImageView" superclassName="UIImageView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PFImageView.h"/>
-        </class>
-        <class className="ViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginWithFacebook:"/>
-                <relationship kind="action" name="swipeLeft:"/>
-                <relationship kind="action" name="swipeRight:"/>
-                <relationship kind="action" name="touchLeft:"/>
-                <relationship kind="action" name="touchRight:"/>
-                <relationship kind="outlet" name="bottom" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="bottom2" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="bottom3" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="coord" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="face" candidateClass="FBProfilePictureView"/>
-                <relationship kind="outlet" name="face2" candidateClass="FBProfilePictureView"/>
-                <relationship kind="outlet" name="face3" candidateClass="FBProfilePictureView"/>
-                <relationship kind="outlet" name="leftCheck" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="loginButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="question" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="rightCheck" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="top" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="top2" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="top3" candidateClass="PFImageView"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

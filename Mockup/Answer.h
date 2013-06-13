@@ -13,6 +13,7 @@
 
 @property (nonatomic, copy) NSString *entityId;
 @property (nonatomic, copy) NSString *questionId;
+@property (nonatomic, copy) NSString *questionText;
 @property (nonatomic, copy) NSString *winningProductId;
 @property (nonatomic, copy) NSString *losingProductId;
 @property (nonatomic, copy) NSString *answerFromUserId;

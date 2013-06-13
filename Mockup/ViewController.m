@@ -21,6 +21,7 @@
 
 @implementation ViewController
 @synthesize loginButton;
+@synthesize question_label;
 
 - (void)viewDidLoad
 {
@@ -49,6 +50,8 @@
     self.friendFacebookIds = [[NSMutableArray alloc] initWithCapacity:3];
     self.topProductIds = [[NSMutableArray alloc] initWithCapacity:3];
     self.bottomProductIds = [[NSMutableArray alloc] initWithCapacity:3];
+    self.questionIds = [[NSMutableArray alloc] initWithCapacity:3];
+    self.questionTexts = [[NSMutableArray alloc] initWithCapacity:3];
     [self.friendFacebookIds addObject:@"test"];
     [self.friendFacebookIds addObject:@"test"];
     [self.friendFacebookIds addObject:@"test"];
@@ -58,8 +61,14 @@
     [self.bottomProductIds addObject:@"test"];
     [self.bottomProductIds addObject:@"test"];
     [self.bottomProductIds addObject:@"test"];
+    [self.questionIds addObject:@"test"];
+    [self.questionIds addObject:@"test"];
+    [self.questionIds addObject:@"test"];
+    [self.questionTexts addObject:@"test"];
+    [self.questionTexts addObject:@"test"];
+    [self.questionTexts addObject:@"test"];
     
-    NSLog(@"initialized all arrays: %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds);
+    NSLog(@"initialized all arrays: %@ %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds, self.questionTexts);
     
     //sets up the store for answers
     self.store = [KCSAppdataStore storeWithOptions:@{ KCSStoreKeyCollectionName : @"Answer",
@@ -241,6 +250,7 @@ int getRand(int max, int old) {
 //this actually loads in an image for TWO in the future
 -(void) reloadIntoBackground
 {
+        
     // set indicators to false
     self.profilePicDidLoad = NO;
     self.productsDidLoad = NO;
@@ -280,6 +290,7 @@ int getRand(int max, int old) {
         self.front = 1;
     }
     
+
     //NSString *currentId = [[PFUser currentUser] objectId];
     if ([KCSUser hasSavedCredentials]){
         NSLog(@"the user has saved credentials");
@@ -317,7 +328,15 @@ int getRand(int max, int old) {
             
             [self.topProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_1"]];
             [self.bottomProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_2"]];
+            
+            //saves question info
+            [self.questionIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"question_id"]];
+            [self.questionTexts replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"question_text"]];
 
+            NSLog(@"QUestions are %@", self.questionTexts);
+            NSLog(@"Count is %d", self.front);
+            //shows the current question
+            self.question_label.text = [self.questionTexts objectAtIndex:(self.front+2)%3];
             
             NSString *imgFilenameTop = results[@"img_1"];
             NSString *imgFilenameBottom = results[@"img_2"];
@@ -360,7 +379,7 @@ int getRand(int max, int old) {
         }
         self.productsDidLoad = YES;
         
-    }];
+    }];    
 }
 
 //this actually loads in an image for TWO in the future
@@ -425,7 +444,7 @@ int getRand(int max, int old) {
             next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
             next_face.layer.masksToBounds = YES;
             NSLog(@"Just finished profile and count is %d", current);
-            NSLog(@"initialized all arrays: %@", self.friendFacebookIds);
+            
         } else{
             NSLog(@"error loading random friend: %@", error);
         }
@@ -444,6 +463,11 @@ int getRand(int max, int old) {
             [self.topProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_1"]];
             [self.bottomProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_2"]];
             
+            //saves question info
+            [self.questionIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"question_id"]];
+            [self.questionTexts replaceObjectAtIndex:((current+2)%3) withObject:results[@"question_text"]];
+            
+            NSLog(@"initialized all arrays: %@", self.questionTexts);
             
             NSString *imgFilenameTop = results[@"img_1"];
             NSString *imgFilenameBottom = results[@"img_2"];
@@ -554,13 +578,14 @@ int getRand(int max, int old) {
 }
 
 -(void) saveCurrentAnswer:(bool)top {
-    NSLog(@"initialized all arrays: %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds);
+    NSLog(@"initialized all arrays: %@ %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds, self.questionTexts);
     NSLog(@"Front: %d", (self.front+2)%3);
     
     
     //creates answer
     Answer* dbAnswer = [[Answer alloc] init];
-    dbAnswer.questionId = @"dunno";
+    dbAnswer.questionId = [self.questionIds objectAtIndex:(self.front+2)%3];
+    dbAnswer.questionText = [self.questionTexts objectAtIndex:(self.front+2)%3];
     dbAnswer.answerFromUserId = [KCSUser activeUser].userId;
     dbAnswer.answerForFacebookId =  [self.friendFacebookIds objectAtIndex:(self.front+2)%3];
         

@@ -16,6 +16,7 @@
     return @{
     @"entityId": KCSEntityKeyId,
     @"questionId": @"questionId",
+    @"questionText": @"questionText",
     @"winningProductId": @"winningProductId",
     @"losingProductId": @"losingProductId",
     @"answerFromUserId": @"answerFromUserId",

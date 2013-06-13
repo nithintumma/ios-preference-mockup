@@ -32,6 +32,7 @@
 @property (weak, nonatomic) IBOutlet PFImageView *bottom2;
 @property (weak, nonatomic) IBOutlet PFImageView *top3;
 @property (weak, nonatomic) IBOutlet PFImageView *bottom3;
+@property (retain, nonatomic) IBOutlet UITextView *question_label;
 
 // store the values of the required instance variables
 @property (nonatomic, retain)KCSAppdataStore *store;    
@@ -39,7 +40,8 @@
 @property (nonatomic, retain)NSMutableArray *topProductIds;
 @property (nonatomic, retain)NSMutableArray *bottomProductIds;
 @property (nonatomic, retain)NSMutableArray *friendFacebookIds;
-@property (nonatomic, retain)NSMutableArray *questionObjectIds;
+@property (nonatomic, retain)NSMutableArray *questionIds;
+@property (nonatomic, retain)NSMutableArray *questionTexts;
 
 @property (weak, nonatomic) NSString *currentTopProductId;
 @property (weak, nonatomic) NSString *currentBottomProductId;
