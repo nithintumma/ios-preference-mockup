@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import <KinveyKit/KinveyKit.h>
+
 
 @interface ViewController : UIViewController{
     UIPanGestureRecognizer* gestureRecognizer;
@@ -31,11 +33,13 @@
 @property (weak, nonatomic) IBOutlet PFImageView *top3;
 @property (weak, nonatomic) IBOutlet PFImageView *bottom3;
 
-// store the values of the required instance variables 
-@property (weak, nonatomic) NSMutableArray *topProductIds;
-@property (weak, nonatomic) NSMutableArray *bottomProductIds;
-@property (weak, nonatomic) NSMutableArray *friendFacebookIds;
-@property (weak, nonatomic) NSMutableArray *questionObjectIds;
+// store the values of the required instance variables
+@property (nonatomic, retain)KCSAppdataStore *store;    
+
+@property (nonatomic, retain)NSMutableArray *topProductIds;
+@property (nonatomic, retain)NSMutableArray *bottomProductIds;
+@property (nonatomic, retain)NSMutableArray *friendFacebookIds;
+@property (nonatomic, retain)NSMutableArray *questionObjectIds;
 
 @property (weak, nonatomic) NSString *currentTopProductId;
 @property (weak, nonatomic) NSString *currentBottomProductId;

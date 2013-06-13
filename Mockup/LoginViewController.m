@@ -42,7 +42,7 @@
             NSLog(@"In login block");
             [FBSession setActiveSession:session];
             if (status == FBSessionStateOpen) {
-                [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
+                
                 
                 
                 NSLog(@"Open?: ");
@@ -53,8 +53,7 @@
                     
                     NSLog(@"Accesstoken: %@", accessToken);
                     
-                    
-                    
+                    [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
                 }];
                 
                 

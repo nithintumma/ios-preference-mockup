@@ -13,6 +13,7 @@
 #import <QuartzCore/QuartzCore.h> 
 
 #import "AppDelegate.h"
+#import "Answer.h"
 
 @interface ViewController ()
 
@@ -20,7 +21,6 @@
 
 @implementation ViewController
 @synthesize loginButton;
-
 
 - (void)viewDidLoad
 {
@@ -33,13 +33,50 @@
     [self.face addGestureRecognizer:pangr];
     [self.face2 addGestureRecognizer:pangr2];
     [self.face3 addGestureRecognizer:pangr3];
+        
+    //hides all items besides the first set
+    self.top.hidden = (self.front != 0);
+    self.bottom.hidden = (self.front != 0);
+    self.face.hidden = (self.front != 0);
+    self.top2.hidden = (self.front != 1);
+    self.bottom2.hidden = (self.front != 1);
+    self.face2.hidden = (self.front != 1);
+    self.top3.hidden = (self.front != 2);
+    self.bottom3.hidden = (self.front != 2);
+    self.face3.hidden = (self.front != 2);
+
+    //initializes arrays
+    self.friendFacebookIds = [[NSMutableArray alloc] initWithCapacity:3];
+    self.topProductIds = [[NSMutableArray alloc] initWithCapacity:3];
+    self.bottomProductIds = [[NSMutableArray alloc] initWithCapacity:3];
+    [self.friendFacebookIds addObject:@"test"];
+    [self.friendFacebookIds addObject:@"test"];
+    [self.friendFacebookIds addObject:@"test"];
+    [self.topProductIds addObject:@"test"];
+    [self.topProductIds addObject:@"test"];
+    [self.topProductIds addObject:@"test"];
+    [self.bottomProductIds addObject:@"test"];
+    [self.bottomProductIds addObject:@"test"];
+    [self.bottomProductIds addObject:@"test"];
+    
+    NSLog(@"initialized all arrays: %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds);
+    
+    //sets up the store for answers
+    self.store = [KCSAppdataStore storeWithOptions:@{ KCSStoreKeyCollectionName : @"Answer",
+           KCSStoreKeyCollectionTemplateClass : [Answer class]}];
+    
+    //starts it off for the first time
+    //[self reloadIntoBackgroundAtBeginning:0];
+    [self reloadIntoBackgroundAtBeginning:1];
+    [self reloadIntoBackgroundAtBeginning:2];
+    [self reloadIntoBackground];
+
+    //[self refresh];
     
     [super viewDidLoad];
     
-    //starts it off for the first time
-    [self reloadIntoBackground];
-    [self reloadIntoBackground];
-    [self reloadIntoBackground];
+
+    
     
 }
 
@@ -97,14 +134,14 @@
         
         CGRect newButtonFrame = draggedButton.frame;
         //calculates a damping coefficient - the farther we are away from the center of the app, the more friction we will have (ranging from 0.5 to 1)        
-        //assumes center at x=120,y=260 (wrong, but good enough for now)
+        //assumes center at x=114,y=194 (wrong, but good enough for now)
         //x goes from -60 to 290, y goes from -40 to 430 (roughly, and once again wrong but good enough for now)
         //ranges roughly from 1 at the origin to 0.2 at the edge
         //NSLog(@"X coord: %f", newButtonFrame.origin.x);
         //NSLog(@"Y coord: %f", newButtonFrame.origin.y);
         
-        float xdist = powf((1-(fabsf(108-newButtonFrame.origin.x)/180)*.3),2);
-        float ydist = powf((1-(fabsf(237-newButtonFrame.origin.y)/250)*.3),2);
+        float xdist = powf((1-(fabsf(114-newButtonFrame.origin.x)/180)*.3),2);
+        float ydist = powf((1-(fabsf(194-newButtonFrame.origin.y)/250)*.3),2);
         
         //NSLog(@"X damp: %f", xdist);
         //NSLog(@"Y damp: %f", ydist);
@@ -119,12 +156,12 @@
         
         //sets a slightly opaque checkmark over the right image
         
-        NSLog(@"X dist: %f", xdist);
-        NSLog(@"y dist: %f", ydist);
+        //NSLog(@"X dist: %f", xdist);
+        //NSLog(@"y dist: %f", ydist);
         
         
         //if we're on the top
-        if(newButtonFrame.origin.y < 237)
+        if(newButtonFrame.origin.y < 194)
         {
             self.leftCheck.alpha = 1.5 - ydist;
             self.rightCheck.alpha = 0;
@@ -148,25 +185,29 @@
         CGRect newButtonFrame = draggedButton.frame;
         
         //float dist = powf(120-newButtonFrame.origin.x,2) + powf(164-newButtonFrame.origin.y,2);
-        float dist = powf(237-newButtonFrame.origin.y,2);
+        float dist = powf(194-newButtonFrame.origin.y,2);
 
         
-        NSLog(@"Distance: %f", dist);
+        //NSLog(@"Distance: %f", dist);
         
         //if we're far away from the center, then keep same y and move to greater x side
         if(dist > 5000)
         {
             //if we're on top
-            if(newButtonFrame.origin.y < 237)
+            if(newButtonFrame.origin.y < 194)
             {
-                newButtonFrame.origin.y = -80;
+                draggedButton.hidden = true;
+                NSLog(@"Saving top");
+                [self saveCurrentAnswer:YES];
             }
             else
             {
-                newButtonFrame.origin.y = 450;
+                draggedButton.hidden = true;
+                NSLog(@"Saving bottom");
+                [self saveCurrentAnswer:NO];
             }
             draggedButton.frame = newButtonFrame;
-            [self refresh];            
+          
         }
         else
         {
@@ -174,8 +215,8 @@
             self.leftCheck.alpha = 0;
             self.rightCheck.alpha = 0;
             
-            newButtonFrame.origin.x = 108;
-            newButtonFrame.origin.y = 237;
+            newButtonFrame.origin.x = 114;
+            newButtonFrame.origin.y = 194;
             draggedButton.frame = newButtonFrame;
         }
                 
@@ -195,7 +236,9 @@ int getRand(int max, int old) {
 }
 
 
-// gets a new friend and a new
+// gets a new friend and a new set of projects
+
+//this actually loads in an image for TWO in the future
 -(void) reloadIntoBackground
 {
     // set indicators to false
@@ -206,23 +249,27 @@ int getRand(int max, int old) {
     PFImageView *next_top = self.top;
     PFImageView *next_bottom = self.bottom;
     FBProfilePictureView *next_face = self.face;
-    if (self.front == 0){
-        next_top = self.top;
-        next_bottom = self.bottom;
-        next_face = self.face;
-        
-        // change the top image
-        self.front = 1;
-    }
-    else if (self.front == 1)
-    {
+    
+    //if we're currently at the last set
+    if (self.front == 2){
         next_top = self.top2;
         next_bottom = self.bottom2;
         next_face = self.face2;
         
         // change the top image
+        self.front = 0;
+    }
+    //otherwise if we're on the second set
+    else if (self.front == 1)
+    {
+        next_top = self.top;
+        next_bottom = self.bottom;
+        next_face = self.face;
+        
+        // change the top image
         self.front = 2;
     }
+    //otherwise if we're on the first set
     else
     {
         next_top = self.top3;
@@ -230,66 +277,216 @@ int getRand(int max, int old) {
         next_face = self.face3;
         
         // change the top image
-        self.front = 0;
+        self.front = 1;
     }
-            
-    NSString *currentId = [[PFUser currentUser] objectId];
-        
-    /*
-    // get random friend from the cloud
-    ([PFCloud callFunctionInBackground:@"getRandomFriend"
-                        withParameters:@{@"id": currentId}
-                                 block:^(NSString *result, NSError *error) {
-                                     if (!error) {
-                                         // the result is a json encoded string
-                                         //NSLog(@"Result in get rand friend is %@", result);
-                                         next_face.profileID = [NSString stringWithFormat:@"%@", result];;
-                                         next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
-                                         next_face.layer.masksToBounds = YES;
-                                         //next_face.profileID = @"1234";
-                                         //NSLog(@"Just finished profile");                                                                                  
-                                     } else {
-                                         NSLog(@"error while retrieving random friend");
-                                     }
-                                     
-                                     self.profilePicDidLoad = YES;
-                                     
-                                 }]);
     
-    // get products from the cloud and load them
-    [PFCloud callFunctionInBackground:@"getProducts"
-                       withParameters:@{@"type": @"male_shoe"}
-                                block:^(NSDictionary *result, NSError *error) {
-                                    if (!error) {
-                                        // the result is a json encoded string
-                                        //self.nextTopProductId = result[@"id_1"];
-                                        //self.nextBottomId = result[@"id_2"];
-                                        next_top.file = result[@"img_1"];
-                                        next_bottom.file = result[@"img_2"];
-                                        
-                                        //rounds corners
-                                        next_top.layer.cornerRadius = 120;
-                                        next_top.layer.masksToBounds = YES;
-                                        next_bottom.layer.cornerRadius = 120;
-                                        next_bottom.layer.masksToBounds = YES;
-                                        
-                                        // async load 
-                                        [next_top loadInBackground];
-                                        [next_bottom loadInBackground];
+    //NSString *currentId = [[PFUser currentUser] objectId];
+    if ([KCSUser hasSavedCredentials]){
+        NSLog(@"the user has saved credentials");
+    }
+    KCSUser *activeUser = [KCSUser activeUser];
+    NSString *currentId = [activeUser kinveyObjectId];
 
-                                            // do the array shit here 
-                                            //self.topProductIds[((self.front - 1) % 3)] = result[@"id_1"];
-                                            //self.bottomProductIds[((self.front - 1) % 3)] = result[@"id_2"];
-                                            //self.questionObjectIds[((self.front - 1) % 3)] = result[@"question_id"];
+    
+    [KCSCustomEndpoints callEndpoint: @"getRandomFriend" params: nil completionBlock:^(id results, NSError *error) {
+        if (results) {
+            //NSLog(@"Result in get rand friend is %@", results);
+            next_face.profileID = [NSString stringWithFormat:@"%@", results[@"facebook_id"]];
+            
+            //saves that facebook ID
+            [self.friendFacebookIds replaceObjectAtIndex:((self.front+1)%3) withObject:[NSString stringWithFormat:@"%@", results[@"facebook_id"]]];
+            
+            //rounds
+            next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
+            next_face.layer.masksToBounds = YES;
+            NSLog(@"Just finished profile and count is %d", self.front);
+        } else{
+            NSLog(@"error loading random friend: %@", error);
+        }
+        self.profilePicDidLoad = YES;
+    }];
+    
+    [KCSCustomEndpoints callEndpoint: @"getRandomProducts" params: nil completionBlock:^(id results, NSError *error) {
+        if (results) {
+            NSLog(@"%@", results);
+            
+            self.nextTopProductId = results[@"product_1"];
+            self.nextBottomId = results[@"product_2"];
+            
+            //saves IDs of the top and bottom products
+            
+            [self.topProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_1"]];
+            [self.bottomProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_2"]];
 
-                                    } else {
-                                        NSLog(@"error while retrieving product");
-                                    }
+            
+            NSString *imgFilenameTop = results[@"img_1"];
+            NSString *imgFilenameBottom = results[@"img_2"];
+            // load the images from the database
+            // set the UIImageView's to the new values
+            next_top.layer.cornerRadius = 10;
+            next_top.layer.masksToBounds = YES;
+            next_bottom.layer.cornerRadius = 10;
+            next_bottom.layer.masksToBounds = YES;
+            
+            // download the top image
+            [KCSResourceService downloadResource:imgFilenameTop completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
+                if (errorOrNil == nil && objectsOrNil.count == 1) {
+                    //successful download
+                    KCSResourceResponse* response = objectsOrNil[0];
+                    [next_top setImage: [UIImage imageWithData: response.resource]];
+                    NSLog(@"created top product image");
+                } else {
+                    NSLog(@"error downloading 'topProductImage'");
+                }
+            } progressBlock:nil];
+            
+            // download the top image
+            [KCSResourceService downloadResource:imgFilenameBottom completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
+                if (errorOrNil == nil && objectsOrNil.count == 1) {
+                    //successful download
+                    KCSResourceResponse* response_bottom = objectsOrNil[0];
+                    [next_bottom
+                     setImage: [UIImage imageWithData: response_bottom.resource]];
+                    NSLog(@"created bottom product image");
+                    
+                    
+                } else {
+                    NSLog(@"error downloading 'bottomProductImage'");
+                }
+            } progressBlock:nil];
+            
+        } else {
+            NSLog(@"error retrieving random products: %@", error);
+        }
+        self.productsDidLoad = YES;
+        
+    }];
+}
 
-                                    self.productsDidLoad = YES;
-
-                                }];
-    */
+//this actually loads in an image for TWO in the future
+-(void) reloadIntoBackgroundAtBeginning:(NSInteger)current
+{
+    // set indicators to false
+    self.profilePicDidLoad = NO;
+    self.productsDidLoad = NO;
+    
+    // init the current image holder
+    PFImageView *next_top = self.top;
+    PFImageView *next_bottom = self.bottom;
+    FBProfilePictureView *next_face = self.face;
+    
+    //if we're currently at the last set
+    if (current == 2){
+        next_top = self.top2;
+        next_bottom = self.bottom2;
+        next_face = self.face2;
+        
+        // change the top image
+        //current = 0;
+    }
+    //otherwise if we're on the second set
+    else if (current == 1)
+    {
+        next_top = self.top;
+        next_bottom = self.bottom;
+        next_face = self.face;
+        
+        // change the top image
+        //current = 2;
+    }
+    //otherwise if we're on the first set
+    else
+    {
+        next_top = self.top3;
+        next_bottom = self.bottom3;
+        next_face = self.face3;
+        
+        // change the top image
+        //current = 1;
+    }
+    
+    //NSString *currentId = [[PFUser currentUser] objectId];
+    if ([KCSUser hasSavedCredentials]){
+        NSLog(@"the user has saved credentials");
+    }
+    KCSUser *activeUser = [KCSUser activeUser];
+    NSString *currentId = [activeUser kinveyObjectId];
+    
+    
+    [KCSCustomEndpoints callEndpoint: @"getRandomFriend" params: nil completionBlock:^(id results, NSError *error) {
+        if (results) {
+            //NSLog(@"Result in get rand friend is %@", results);
+            next_face.profileID = [NSString stringWithFormat:@"%@", results[@"facebook_id"]];
+            
+            //saves that facebook ID
+            [self.friendFacebookIds replaceObjectAtIndex:((current+2)%3) withObject:[NSString stringWithFormat:@"%@", results[@"facebook_id"]]];
+            
+            //rounds
+            next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
+            next_face.layer.masksToBounds = YES;
+            NSLog(@"Just finished profile and count is %d", current);
+            NSLog(@"initialized all arrays: %@", self.friendFacebookIds);
+        } else{
+            NSLog(@"error loading random friend: %@", error);
+        }
+        self.profilePicDidLoad = YES;
+    }];
+    
+    [KCSCustomEndpoints callEndpoint: @"getRandomProducts" params: nil completionBlock:^(id results, NSError *error) {
+        if (results) {
+            NSLog(@"%@", results);
+            
+            self.nextTopProductId = results[@"product_1"];
+            self.nextBottomId = results[@"product_2"];
+            
+            //saves IDs of the top and bottom products
+            
+            [self.topProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_1"]];
+            [self.bottomProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_2"]];
+            
+            
+            NSString *imgFilenameTop = results[@"img_1"];
+            NSString *imgFilenameBottom = results[@"img_2"];
+            // load the images from the database
+            // set the UIImageView's to the new values
+            next_top.layer.cornerRadius = 10;
+            next_top.layer.masksToBounds = YES;
+            next_bottom.layer.cornerRadius = 10;
+            next_bottom.layer.masksToBounds = YES;
+            
+            // download the top image
+            [KCSResourceService downloadResource:imgFilenameTop completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
+                if (errorOrNil == nil && objectsOrNil.count == 1) {
+                    //successful download
+                    KCSResourceResponse* response = objectsOrNil[0];
+                    [next_top setImage: [UIImage imageWithData: response.resource]];
+                    NSLog(@"created top product image");
+                } else {
+                    NSLog(@"error downloading 'topProductImage'");
+                }
+            } progressBlock:nil];
+            
+            // download the top image
+            [KCSResourceService downloadResource:imgFilenameBottom completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
+                if (errorOrNil == nil && objectsOrNil.count == 1) {
+                    //successful download
+                    KCSResourceResponse* response_bottom = objectsOrNil[0];
+                    [next_bottom
+                     setImage: [UIImage imageWithData: response_bottom.resource]];
+                    NSLog(@"created bottom product image");
+                    
+                    
+                } else {
+                    NSLog(@"error downloading 'bottomProductImage'");
+                }
+            } progressBlock:nil];
+            
+        } else {
+            NSLog(@"error retrieving random products: %@", error);
+        }
+        self.productsDidLoad = YES;
+        
+    }];
 }
 
 -(void) createAnswerForCurrentProducts
@@ -317,8 +514,7 @@ int getRand(int max, int old) {
     // hide the appropriate variables
     if (self.profilePicDidLoad && self.productsDidLoad) {
         
-        [self reloadIntoBackground];
-        
+        //shows and hides the right ones
         self.top.hidden = (self.front != 0);
         self.bottom.hidden = (self.front != 0);
         self.face.hidden = (self.front != 0);
@@ -329,6 +525,13 @@ int getRand(int max, int old) {
         self.bottom3.hidden = (self.front != 2);
         self.face3.hidden = (self.front != 2);
         
+        //prints the values for the current items
+        NSLog(@"Current fb array: %@", self.friendFacebookIds);
+        NSLog(@"Current fb id: %@", [self.friendFacebookIds objectAtIndex:self.front]);
+        NSLog(@"Current top id: %@", [self.topProductIds objectAtIndex:self.front]);
+        NSLog(@"Current bottom id: %@", [self.bottomProductIds objectAtIndex:self.front]);
+        
+        [self reloadIntoBackground];
         
         NSInteger greeting = arc4random() % 5;
         int intGreeting = greeting;
@@ -339,7 +542,7 @@ int getRand(int max, int old) {
         newButtonFrame.origin.x = 108;
         newButtonFrame.origin.y = 237;
         self.face.frame = newButtonFrame;
-        
+
         //resets checks
         self.leftCheck.alpha = 0;
         self.rightCheck.alpha = 0;
@@ -350,8 +553,46 @@ int getRand(int max, int old) {
     
 }
 
+-(void) saveCurrentAnswer:(bool)top {
+    NSLog(@"initialized all arrays: %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds);
+    NSLog(@"Front: %d", (self.front+2)%3);
+    
+    
+    //creates answer
+    Answer* dbAnswer = [[Answer alloc] init];
+    dbAnswer.questionId = @"dunno";
+    dbAnswer.answerFromUserId = [KCSUser activeUser].userId;
+    dbAnswer.answerForFacebookId =  [self.friendFacebookIds objectAtIndex:(self.front+2)%3];
+        
+    //if they selected the top one
+    if(top)
+    {
+        dbAnswer.winningProductId = [self.topProductIds objectAtIndex:(self.front+2)%3];
+        dbAnswer.losingProductId = [self.bottomProductIds objectAtIndex:(self.front+2)%3];
+        
+    }
+    else
+    {
+        dbAnswer.winningProductId = [self.bottomProductIds objectAtIndex:(self.front+2)%3];
+        dbAnswer.losingProductId = [self.topProductIds objectAtIndex:(self.front+2)%3];
+    }
+
+    [self.store saveObject:dbAnswer withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
+        if (errorOrNil != nil) {
+            //save failed, show an error alert
+            NSLog(@"Saving failed :( %@", [errorOrNil localizedFailureReason]);
+        } else {
+            //save was successful
+            NSLog(@"Successfully saved event (id='%@').", [objectsOrNil[0] kinveyObjectId]);
+        }
+    } withProgressBlock:nil];
+    
+    [self refresh];  
+    
+}
 
 - (IBAction)swipeRight:(id)sender {
+    
     [self refresh];
 }
 
