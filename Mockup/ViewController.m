@@ -50,23 +50,35 @@
     self.friendFacebookIds = [[NSMutableArray alloc] initWithCapacity:3];
     self.topProductIds = [[NSMutableArray alloc] initWithCapacity:3];
     self.bottomProductIds = [[NSMutableArray alloc] initWithCapacity:3];
+    self.topProductURLs = [[NSMutableArray alloc] initWithCapacity:3];
+    self.bottomProductURLs = [[NSMutableArray alloc] initWithCapacity:3];
     self.questionIds = [[NSMutableArray alloc] initWithCapacity:3];
     self.questionTexts = [[NSMutableArray alloc] initWithCapacity:3];
+    self.questionTypes = [[NSMutableArray alloc] initWithCapacity:3];
     [self.friendFacebookIds addObject:@"test"];
     [self.friendFacebookIds addObject:@"test"];
     [self.friendFacebookIds addObject:@"test"];
     [self.topProductIds addObject:@"test"];
     [self.topProductIds addObject:@"test"];
     [self.topProductIds addObject:@"test"];
+    [self.topProductURLs addObject:@"test"];
+    [self.topProductURLs addObject:@"test"];
+    [self.topProductURLs addObject:@"test"];
     [self.bottomProductIds addObject:@"test"];
     [self.bottomProductIds addObject:@"test"];
     [self.bottomProductIds addObject:@"test"];
+    [self.bottomProductURLs addObject:@"test"];
+    [self.bottomProductURLs addObject:@"test"];
+    [self.bottomProductURLs addObject:@"test"];
     [self.questionIds addObject:@"test"];
     [self.questionIds addObject:@"test"];
     [self.questionIds addObject:@"test"];
     [self.questionTexts addObject:@"test"];
     [self.questionTexts addObject:@"test"];
     [self.questionTexts addObject:@"test"];
+    [self.questionTypes addObject:@"test"];
+    [self.questionTypes addObject:@"test"];
+    [self.questionTypes addObject:@"test"];
     
     NSLog(@"initialized all arrays: %@ %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds, self.questionTexts);
     
@@ -244,6 +256,47 @@ int getRand(int max, int old) {
     return random;
 }
 
+-(void) moveCar
+{
+/**
+    self.car.my.constant = 42.0;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.view layoutIfNeeded];
+    }]
+*/
+    CGFloat originalY = self.car.layer.position.y;
+    self.car.layer.position = CGPointMake(self.car.layer.position.x, 300.0);
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position.y"];
+    animation.fromValue = @(originalY);
+    animation.toValue = @300.0;
+    animation.duration = 1.0;
+    [self.car.layer addAnimation:animation forKey:@"position"];
+
+
+    /**
+    CABasicAnimation* ba = [CABasicAnimation animationWithKeyPath:@"position"];
+    ba.duration = 0.3;
+    ba.fromValue = [NSValue valueWithCGPoint:CGPointMake(25.0, 25.0)];
+    //ba.toValue =
+    [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.1, 1.1, 1)];
+    ba.toValue = [NSValue valueWithCGPoint:CGPointMake(250.0, 100.0)];
+    [self.car.layer addAnimation:ba forKey:nil];
+    */
+    
+    //[UIView animateWithDuration:0.5 animations:^{[self.view layoutIfNeeded];}];
+
+    //self.car.frame.size.width = self.car.frame.size.width + 100;
+    //UIView *car = self.car;
+    //[car.layer setPosition:CGPointMake(100.0, 100.0)];
+    //self.car.translatesAutoresizingMaskIntoConstraints=NO;
+    //CGRect frame = car.layer.frame;
+    //frame.size.width = 200;
+    //frame.origin.y += 20;
+    //self.car.layer.frame = frame;
+    //[car.layer addAnimation:mover forKey:@"position"];
+}
+
 
 // gets a new friend and a new set of projects
 
@@ -329,9 +382,14 @@ int getRand(int max, int old) {
             [self.topProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_1"]];
             [self.bottomProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_2"]];
             
+            //saves urls of top and bottom products
+            [self.topProductURLs replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"img_1"]];
+            [self.bottomProductURLs replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"img_2"]];
+            
             //saves question info
             [self.questionIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"question_id"]];
             [self.questionTexts replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"question_text"]];
+            [self.questionTypes replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"type"]];
 
             NSLog(@"QUestions are %@", self.questionTexts);
             NSLog(@"Count is %d", self.front);
@@ -463,9 +521,14 @@ int getRand(int max, int old) {
             [self.topProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_1"]];
             [self.bottomProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_2"]];
             
+            //saves urls of top and bottom products
+            [self.topProductURLs replaceObjectAtIndex:((current+2)%3) withObject:results[@"img_1"]];
+            [self.bottomProductURLs replaceObjectAtIndex:((current+2)%3) withObject:results[@"img_2"]];
+            
             //saves question info
             [self.questionIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"question_id"]];
             [self.questionTexts replaceObjectAtIndex:((current+2)%3) withObject:results[@"question_text"]];
+            [self.questionTypes replaceObjectAtIndex:((current+2)%3) withObject:results[@"type"]];
             
             NSLog(@"initialized all arrays: %@", self.questionTexts);
             
@@ -578,6 +641,9 @@ int getRand(int max, int old) {
 }
 
 -(void) saveCurrentAnswer:(bool)top {
+    //moves car
+    [self moveCar];
+    
     NSLog(@"initialized all arrays: %@ %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds, self.questionTexts);
     NSLog(@"Front: %d", (self.front+2)%3);
     
@@ -586,8 +652,13 @@ int getRand(int max, int old) {
     Answer* dbAnswer = [[Answer alloc] init];
     dbAnswer.questionId = [self.questionIds objectAtIndex:(self.front+2)%3];
     dbAnswer.questionText = [self.questionTexts objectAtIndex:(self.front+2)%3];
+    dbAnswer.productType = [self.questionTypes objectAtIndex:(self.front+2)%3];
+    
     dbAnswer.answerFromUserId = [KCSUser activeUser].userId;
-    dbAnswer.answerForFacebookId =  [self.friendFacebookIds objectAtIndex:(self.front+2)%3];
+    //dbAnswer.answerForFacebookId =  [self.friendFacebookIds objectAtIndex:(self.front+2)%3];
+    dbAnswer.answerForFacebookId =  @"1256912018";
+    dbAnswer.answerFromFacebookId = [[[KCSUser activeUser] getValueForAttribute:@"profile"] objectForKey:@"facebookId"];
+    
         
     //if they selected the top one
     if(top)
@@ -595,17 +666,23 @@ int getRand(int max, int old) {
         dbAnswer.winningProductId = [self.topProductIds objectAtIndex:(self.front+2)%3];
         dbAnswer.losingProductId = [self.bottomProductIds objectAtIndex:(self.front+2)%3];
         
+        dbAnswer.winningProductFileName = [self.topProductURLs objectAtIndex:(self.front+2)%3];
+        dbAnswer.losingProductFileName = [self.bottomProductURLs objectAtIndex:(self.front+2)%3];        
+        
     }
     else
     {
         dbAnswer.winningProductId = [self.bottomProductIds objectAtIndex:(self.front+2)%3];
         dbAnswer.losingProductId = [self.topProductIds objectAtIndex:(self.front+2)%3];
+        
+        dbAnswer.winningProductFileName = [self.bottomProductURLs objectAtIndex:(self.front+2)%3];
+        dbAnswer.losingProductFileName = [self.topProductURLs objectAtIndex:(self.front+2)%3];
     }
 
     [self.store saveObject:dbAnswer withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
         if (errorOrNil != nil) {
             //save failed, show an error alert
-            NSLog(@"Saving failed :( %@", [errorOrNil localizedFailureReason]);
+            NSLog(@"Saving failed :( %@, %@", [errorOrNil localizedFailureReason], dbAnswer);
         } else {
             //save was successful
             NSLog(@"Successfully saved event (id='%@').", [objectsOrNil[0] kinveyObjectId]);

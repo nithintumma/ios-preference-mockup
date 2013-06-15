@@ -12,12 +12,16 @@
 @interface Answer : NSObject <KCSPersistable>
 
 @property (nonatomic, copy) NSString *entityId;
+@property (nonatomic, copy) NSString *productType;
 @property (nonatomic, copy) NSString *questionId;
 @property (nonatomic, copy) NSString *questionText;
 @property (nonatomic, copy) NSString *winningProductId;
+@property (nonatomic, copy) NSString *winningProductFileName;
 @property (nonatomic, copy) NSString *losingProductId;
+@property (nonatomic, copy) NSString *losingProductFileName;
 @property (nonatomic, copy) NSString *answerFromUserId;
 @property (nonatomic, copy) NSString *answerForFacebookId;
+@property (nonatomic, copy) NSString *answerFromFacebookId;
 @property (nonatomic, retain) KCSMetadata *metadata;
 
 @end

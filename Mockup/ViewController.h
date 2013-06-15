@@ -40,8 +40,11 @@
 @property (nonatomic, retain)NSMutableArray *topProductIds;
 @property (nonatomic, retain)NSMutableArray *bottomProductIds;
 @property (nonatomic, retain)NSMutableArray *friendFacebookIds;
+@property (nonatomic, retain)NSMutableArray *topProductURLs;
+@property (nonatomic, retain)NSMutableArray *bottomProductURLs;
 @property (nonatomic, retain)NSMutableArray *questionIds;
 @property (nonatomic, retain)NSMutableArray *questionTexts;
+@property (nonatomic, retain)NSMutableArray *questionTypes;
 
 @property (weak, nonatomic) NSString *currentTopProductId;
 @property (weak, nonatomic) NSString *currentBottomProductId;
@@ -63,7 +66,7 @@
 @property (nonatomic, assign) BOOL profilePicDidLoad;
 @property (nonatomic, assign) BOOL productsDidLoad;
 
-
+@property (weak, nonatomic) IBOutlet UIImageView *car;
 @property (weak, nonatomic) IBOutlet UIImageView *leftCheck;
 @property (weak, nonatomic) IBOutlet UIImageView *rightCheck;
 @property (weak, nonatomic) IBOutlet UILabel *question;
