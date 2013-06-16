@@ -65,12 +65,15 @@
 @property (nonatomic, assign) BOOL doneLoading;
 @property (nonatomic, assign) BOOL profilePicDidLoad;
 @property (nonatomic, assign) BOOL productsDidLoad;
+@property (weak, nonatomic) IBOutlet UIImageView *topBar;
 
 @property (weak, nonatomic) IBOutlet UIImageView *car;
 @property (weak, nonatomic) IBOutlet UIImageView *leftCheck;
 @property (weak, nonatomic) IBOutlet UIImageView *rightCheck;
 @property (weak, nonatomic) IBOutlet UILabel *question;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *carBehind;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *carSpace;
 
 - (IBAction)swipeRight:(id)sender;
 - (IBAction)swipeLeft:(id)sender;

@@ -92,9 +92,18 @@
     [self reloadIntoBackgroundAtBeginning:2];
     [self reloadIntoBackground];
 
+    //creates car movement constraint
+    //Example of a constraint to position the Y axis of the text field.
+    
+
     //[self refresh];
     
     [super viewDidLoad];
+    
+    [self.car setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    NSDictionary *views = @{ @"car" : self.car };
+    //[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(170)-[car]" options:0 metrics:nil views:views]];
     
 
     
@@ -258,6 +267,42 @@ int getRand(int max, int old) {
 
 -(void) moveCar
 {
+    //[self.view removeConstraint:self.carBehind];
+    //[self.view removeConstraint:self.carSpace];
+    
+    //[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.question_label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.car attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    
+    //NSLayoutConstraint *con1 = [NSLayoutConstraint constraintWithItem:self.car attribute:NSLayoutAttributeLeading relatedBy:0 toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:114];
+    
+    //[self.view addConstraints:@[con1]];
+    if(self.car.frame.origin.x < 210)
+    {
+        [UIView animateWithDuration:0.4 animations:^{
+            //self.car.layer.transform = CATransform3DMakeRotation(M_PI, 10.0, 10.0, 10.0);;
+            //CGContextRef myContext = UIGraphicsGetCurrentContext();
+            //CGContextTranslateCTM (myContext, 100, 50);
+
+
+            //self.car.transform = CGAffineTransformMakeTranslation(self.car.frame.origin.x + 300,0);
+            CGAffineTransform trans = CGAffineTransformTranslate(self.car.transform, 100,0);
+
+            
+
+         
+            NSLog(@"Now at: %f", self.car.frame.origin.x);
+            self.car.transform = trans;
+            [self.view layoutIfNeeded];
+        }];
+    }
+    else
+    {
+        CGAffineTransform trans = CGAffineTransformIdentity;
+        self.car.transform = trans;
+        [self.view layoutIfNeeded];
+    }
+
+    
+    
 /**
     self.car.my.constant = 42.0;
     
@@ -265,6 +310,7 @@ int getRand(int max, int old) {
         [self.view layoutIfNeeded];
     }]
 */
+    /**
     CGFloat originalY = self.car.layer.position.y;
     self.car.layer.position = CGPointMake(self.car.layer.position.x, 300.0);
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position.y"];
@@ -272,7 +318,7 @@ int getRand(int max, int old) {
     animation.toValue = @300.0;
     animation.duration = 1.0;
     [self.car.layer addAnimation:animation forKey:@"position"];
-
+*/
 
     /**
     CABasicAnimation* ba = [CABasicAnimation animationWithKeyPath:@"position"];

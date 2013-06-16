@@ -126,7 +126,8 @@
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="car.png" translatesAutoresizingMaskIntoConstraints="NO" id="7VS-dU-oDj">
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="45" id="KNb-TH-45X"/>
+                                    <constraint firstAttribute="width" constant="45" type="user" id="KNb-TH-45X"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="45" type="user" id="d8K-f1-biR"/>
                                     <constraint firstAttribute="height" constant="30" id="qLp-dr-1dS"/>
                                 </constraints>
                             </imageView>
@@ -226,6 +227,7 @@
                             <constraint firstItem="ywV-Tq-Mhw" firstAttribute="bottom" secondItem="foE-OH-ZyT" secondAttribute="bottom" type="default" id="KJO-f9-xwm"/>
                             <constraint firstItem="ybq-f6-aPo" firstAttribute="bottom" secondItem="RqF-pK-yA2" secondAttribute="bottom" type="default" id="KKg-j0-2Yf"/>
                             <constraint firstItem="ybq-f6-aPo" firstAttribute="centerX" secondItem="nPG-l4-2hy" secondAttribute="centerX" type="default" id="Kf3-9K-pZL"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7VS-dU-oDj" secondAttribute="trailing" constant="266" type="user" id="L9W-Tb-ODf"/>
                             <constraint firstItem="1g7-dI-GiY" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="114" id="LEZ-W3-tJv"/>
                             <constraint firstItem="7VS-dU-oDj" firstAttribute="centerY" secondItem="NFi-G4-Lhg" secondAttribute="centerY" type="default" id="NqX-9D-d7s"/>
                             <constraint firstItem="UDL-Rt-ZgT" firstAttribute="centerX" secondItem="NFi-G4-Lhg" secondAttribute="centerX" type="default" id="Opl-mb-xnG"/>
@@ -248,10 +250,12 @@
                             <constraint firstItem="E9a-6A-ULM" firstAttribute="bottom" secondItem="nQC-YA-DGB" secondAttribute="bottom" type="default" id="ZwP-JN-liR"/>
                             <constraint firstItem="Abc-M6-LVn" firstAttribute="top" secondItem="nQC-YA-DGB" secondAttribute="top" type="default" id="anW-Tb-5em"/>
                             <constraint firstItem="7VS-dU-oDj" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="9" type="user" id="bdB-kH-NYh"/>
+                            <constraint firstItem="7VS-dU-oDj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="3" secondAttribute="leading" constant="9" type="user" id="ccb-QN-2IT"/>
                             <constraint firstItem="RqF-pK-yA2" firstAttribute="trailing" secondItem="ybq-f6-aPo" secondAttribute="trailing" type="default" id="dro-Sa-WPd"/>
                             <constraint firstItem="zGs-r6-qye" firstAttribute="top" secondItem="3pF-4M-Z28" secondAttribute="top" type="default" id="e1Z-7g-jGc"/>
                             <constraint firstItem="RqF-pK-yA2" firstAttribute="centerX" secondItem="vHD-RZ-gKq" secondAttribute="centerX" type="default" id="eLY-Ie-ayx"/>
                             <constraint firstItem="RqF-pK-yA2" firstAttribute="top" secondItem="ybq-f6-aPo" secondAttribute="top" type="default" id="ePA-uD-v8f"/>
+                            <constraint firstAttribute="trailing" secondItem="7VS-dU-oDj" secondAttribute="trailing" constant="266" type="user" id="fDa-jl-zXo"/>
                             <constraint firstItem="vHD-RZ-gKq" firstAttribute="top" secondItem="3" secondAttribute="top" constant="175" id="fFv-Ih-gZO"/>
                             <constraint firstItem="rXj-gh-SnQ" firstAttribute="leading" secondItem="E9a-6A-ULM" secondAttribute="leading" type="default" id="gdk-0H-wDq"/>
                             <constraint firstItem="c9D-NU-vg6" firstAttribute="centerX" secondItem="3pF-4M-Z28" secondAttribute="centerX" type="default" id="geG-vr-UXP"/>
@@ -275,6 +279,8 @@
                         <outlet property="bottom2" destination="rXj-gh-SnQ" id="jYg-uk-G4n"/>
                         <outlet property="bottom3" destination="E9a-6A-ULM" id="u3q-0I-cSI"/>
                         <outlet property="car" destination="7VS-dU-oDj" id="VWF-Da-fR9"/>
+                        <outlet property="carBehind" destination="ccb-QN-2IT" id="jfa-Wc-oOa"/>
+                        <outlet property="carSpace" destination="L9W-Tb-ODf" id="9Zf-4q-ZI0"/>
                         <outlet property="face" destination="ybq-f6-aPo" id="oo3-6i-otZ"/>
                         <outlet property="face2" destination="RqF-pK-yA2" id="xQn-Tn-u65"/>
                         <outlet property="face3" destination="1g7-dI-GiY" id="1cy-BW-ukf"/>
@@ -284,6 +290,7 @@
                         <outlet property="top" destination="HXh-9W-pSn" id="14E-2n-KPG"/>
                         <outlet property="top2" destination="3pF-4M-Z28" id="wEI-tu-Sq2"/>
                         <outlet property="top3" destination="zGs-r6-qye" id="z6D-vh-bvu"/>
+                        <outlet property="topBar" destination="NFi-G4-Lhg" id="YQi-SW-uPo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
@@ -410,10 +417,10 @@
                                     <constraint firstItem="BjE-Wq-CvJ" firstAttribute="top" secondItem="YDP-0g-LrQ" secondAttribute="top" constant="80" id="61K-Fp-cwO"/>
                                     <constraint firstItem="glt-e2-UH2" firstAttribute="top" secondItem="9e7-TI-1TY" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="7Fo-iR-NjO"/>
                                     <constraint firstItem="f0b-V0-UzM" firstAttribute="bottom" secondItem="glt-e2-UH2" secondAttribute="bottom" type="default" id="7LF-UE-4V9"/>
+                                    <constraint firstAttribute="centerX" secondItem="kYY-U7-d5P" secondAttribute="centerX" type="user" id="BDL-oh-Wou"/>
                                     <constraint firstAttribute="trailing" secondItem="f0b-V0-UzM" secondAttribute="trailing" constant="73" id="Huk-8C-RYL"/>
                                     <constraint firstItem="Bfu-Cv-4JY" firstAttribute="top" secondItem="9e7-TI-1TY" secondAttribute="top" type="default" id="MQW-zz-XaJ"/>
                                     <constraint firstItem="zaw-6r-uYv" firstAttribute="centerY" secondItem="YDP-0g-LrQ" secondAttribute="centerY" type="default" id="OPD-pY-A23"/>
-                                    <constraint firstItem="kYY-U7-d5P" firstAttribute="leading" secondItem="YDP-0g-LrQ" secondAttribute="leading" constant="57" id="UEm-Fl-7Rb"/>
                                     <constraint firstItem="BjE-Wq-CvJ" firstAttribute="top" secondItem="7c0-qX-7Ys" secondAttribute="top" type="default" id="Vch-vZ-TXB"/>
                                     <constraint firstItem="zaw-6r-uYv" firstAttribute="centerX" secondItem="7c0-qX-7Ys" secondAttribute="centerX" type="default" id="Y2D-SU-laL"/>
                                     <constraint firstAttribute="trailing" secondItem="Bfu-Cv-4JY" secondAttribute="trailing" constant="20" type="default" id="YDG-0A-KxO"/>
@@ -529,67 +536,6 @@
         <image name="road_icon.png" width="68" height="69"/>
         <image name="top_bar.png" width="640" height="99"/>
     </resources>
-    <classes>
-        <class className="FBProfilePictureView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FBProfilePictureView.h"/>
-        </class>
-        <class className="FeedObjectCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/FeedObjectCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="checkMark" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="date" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="leftCount" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="leftFriend" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="leftImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="question" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="rightCount" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="rightFriend" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="rightImage" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="LoginViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/LoginViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginButtonTouch:"/>
-                <relationship kind="outlet" name="activityIndicator" candidateClass="UIActivityIndicatorView"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="PFImageView" superclassName="UIImageView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PFImageView.h"/>
-        </class>
-        <class className="TableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/TableViewController.h"/>
-        </class>
-        <class className="ViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="loginWithFacebook:"/>
-                <relationship kind="action" name="swipeLeft:"/>
-                <relationship kind="action" name="swipeRight:"/>
-                <relationship kind="action" name="touchLeft:"/>
-                <relationship kind="action" name="touchRight:"/>
-                <relationship kind="outlet" name="bottom" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="bottom2" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="bottom3" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="car" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="coord" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="face" candidateClass="FBProfilePictureView"/>
-                <relationship kind="outlet" name="face2" candidateClass="FBProfilePictureView"/>
-                <relationship kind="outlet" name="face3" candidateClass="FBProfilePictureView"/>
-                <relationship kind="outlet" name="leftCheck" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="loginButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="question" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="question_label" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="rightCheck" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="top" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="top2" candidateClass="PFImageView"/>
-                <relationship kind="outlet" name="top3" candidateClass="PFImageView"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
