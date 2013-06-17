@@ -11,6 +11,8 @@
 #import "ViewController.h"
 #import "AppDelegate.h"
 #import <KinveyKit/KinveyKit.h>
+#import "PaveAPIClient.h"
+#import "AFNetworking.h"
 
 
 @interface LoginViewController ()
@@ -28,7 +30,7 @@
     // chech if session is open
     AppDelegate* delegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     FBSession* session = delegate.session;
-    
+
     NSLog(@"Session is: %@", session);
     NSLog(@"Session is: %@", FBSession.activeSession);
     
@@ -48,7 +50,11 @@
                 NSLog(@"Open?: ");
                 NSLog(session.isOpen ? @"Yes" : @"No");
                 NSString* accessToken = session.accessToken;
-                [KCSUser loginWithWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
+                
+                
+                // keep for Push Notifications
+                [KCSUser loginWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
+                    
                     NSLog(@"Finished login");
                     
                     NSLog(@"Accesstoken: %@", accessToken);
@@ -70,10 +76,6 @@
     {
         NSLog(@"Not open yet, so not skipping login");        
     }
-    
-    /*if ([PFUser currentUser] && [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-        [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
-    }*/
 }
 
 
@@ -83,161 +85,58 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-- (void) initializeFacebookInformation
+// checks both instance variables to see if the requests went through
+-(void) sendSaveUserAndFacebookInformation
 {
+    if (self.didCompleteProfileInformation && self.didCompleteFriendsInformation) {
+        // use the singleton APIClient
+        NSLog(@"about to request user");
+        
+        NSData *jsonProfile = [NSJSONSerialization dataWithJSONObject:self.userProfile options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *jsonProfileString = [[NSString alloc] initWithData:jsonProfile encoding:NSUTF8StringEncoding];
+        
+        NSData *jsonFriends = [NSJSONSerialization dataWithJSONObject:self.friendIds options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *jsonFriendsString = [[NSString alloc] initWithData:jsonFriends encoding:NSUTF8StringEncoding];
+        
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys: self.userProfile[@"facebookId"], @"id_facebookID", jsonProfileString,  @"id_profile", jsonFriendsString, @"id_friends",   nil];
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:self.friendIds forKey:@"friends"];
+        [defaults setObject:self.userProfile forKey:@"profile"];
+        [defaults synchronize];
 
-    // get basic user information and
-    FBRequest *request = [FBRequest requestForMe];
-    
-    AppDelegate* delegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    FBSession* session = [delegate session];
-    request.session = session;
-    //NSString* accessToken = session.accessToken;
-    NSString *accessToken = [[[FBSession activeSession] accessTokenData] accessToken];
-    
-    NSString *query =
-    //@"SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY mutual_friend_count DESC";
-    [NSString stringWithFormat: @"(SELECT name FROM user WHERE uid = me())"];
-    //query = [query stringByAppendingString:accessToken];
-
-    NSLog(@"FB active session : ");
-    NSLog([FBSession activeSession].isOpen ? @"Yes" : @"No");
-    
-    // Set up the query parameter
-    //NSDictionary *queryParam = [NSDictionary dictionaryWithObjectsAndKeys:query, @"queries", nil];
-    NSDictionary *queryParam = [NSDictionary dictionaryWithObject:query forKey:@"queries"];
-
-    // Make the API request that uses FQL
-    //[FBRequestConnection startWithGraphPath:@"/fql"
-    //                             parameters:queryParam
-    //                             HTTPMethod:@"GET"
-    //                    completionHandler:^(FBRequestConnection *connection,
-    FBRequestConnection *conn = [[FBRequestConnection alloc] init];
-    
-    //FBRequest *fql1 = [[FBRequest alloc] initWithSession:session graphPath:@"/fql" parameters:queryParam HTTPMethod:@"GET"];
-    FBRequest *fql1 = [FBRequest requestForMyFriends];
-    fql1.session = session;
-
-    [conn addRequest:fql1 completionHandler:^(FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error) {
-                              if (error) {
-                                  NSLog(@"connection data");
-                                  NSLog(@"%@", fql1);
-                                  NSLog(@"Error while getting facebook friends %@",error);
-                              } else {
-                                  //creates a dict of ids
-                                  NSMutableArray *ids = [[NSMutableArray alloc] initWithCapacity: [result count]];
-                                  
-                                  NSArray *parsed = result[@"data"];
-                                  for(id object in parsed)
-                                  {
-                                      //NSLog(@"Current: %@", object);
-                                      [ids addObject: object[@"uid"]];
-                                  }
-                                  
-                                  //NSLog(@"IDs: %@", ids);
-                                  
-                                  //saves
-                                  [[KCSUser activeUser] setValue: ids forKey: @"friends"];
-                                  [[KCSUser activeUser] saveWithCompletionBlock:^(NSArray * objectsOrNil, NSError * errorOrNil) {
-                                        if (errorOrNil != nil) {
-                                            NSLog(@"Error in saving new user");
-                                        }
-                                        else
-                                        {
-                                            NSLog(@"Successfully updated user");
-                                        }
-                                  }];
-                                  //[[PFUser currentUser] setObject:ids forKey:@"friends"];
-                                  //[[PFUser currentUser] saveInBackground];
-                                  
-                              }
-                          }];
-   
-                       
-    [conn addRequest:request completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        // handle response
-        if (!error) {
-            NSLog(@"downloaded user data %@", result);
-            // Parse the data received
-            NSDictionary *userData = (NSDictionary *)result;
-            
-            NSString *facebookID = userData[@"id"];
-            
-            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
-            
-            // dict to hold data
-            NSMutableDictionary *userProfile = [NSMutableDictionary dictionaryWithCapacity:7];
-            
-            if (facebookID) {
-                userProfile[@"facebookId"] = facebookID;
-            }
-            
-            if (userData[@"name"]) {
-                userProfile[@"name"] = userData[@"name"];
-            }
-            
-            if (userData[@"location"][@"name"]) {
-                userProfile[@"location"] = userData[@"location"][@"name"];
-            }
-            
-            if (userData[@"gender"]) {
-                userProfile[@"gender"] = userData[@"gender"];
-            }
-            
-            if (userData[@"birthday"]) {
-                userProfile[@"birthday"] = userData[@"birthday"];
-            }
-            
-            if (userData[@"relationship_status"]) {
-                userProfile[@"relationship"] = userData[@"relationship_status"];
-            }
-            
-            if ([pictureURL absoluteString]) {
-                userProfile[@"pictureURL"] = [pictureURL absoluteString];
-            }
-            
-            //figure out how to update
-            [[KCSUser activeUser] setValue: userProfile forKey: @"profile"];
-            [[KCSUser activeUser] saveWithCompletionBlock:^(NSArray *objectsOrNil, NSError * errorOrNil) {
-                if (errorOrNil != nil) {
-                    NSLog(@"Error in saving user profile");
-                }
-                else
-                {
-                    NSLog(@"Successfully saved user profile");
-                }
-            }];
-            
-            //[[PFUser currentUser] setObject:userProfile forKey:@"profile"];
-            //[[PFUser currentUser] saveInBackground];
-            
-        }
-        else if ([[[[error userInfo] objectForKey:@"error"] objectForKey:@"type"]
-                    isEqualToString: @"OAuthException"]) { // Since the request failed, we can check if it was due to an invalid session
-            NSLog(@"The facebook session was invalidated");
-        }
-            
-        else {
-            NSLog(@"Some other error: %@", error);
-        }
-    }];
-                   
-    //starts request
-    [conn start];
-    
+        [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
+        
+        
+        //NSLog(@"%@", self.userProfile);
+        //NSLog(@"%@",  jsonString);
+        NSLog(@"Initialized friends as %@", self.friendIds);
+        //NSLog(@"%@", [NSJSONSerialization dataWithJSONObject:self.friendIds options:nil error:nil]);
+        [[PaveAPIClient sharedClient] postPath:@"/data/newuser"
+        //                            parameters:@{@"id_facebookID":self.userProfile[@"facebookId"], @"id_profile": self.userProfile, @"friends": self.friendIds} success:^(AFHTTPRequestOperation *operation, id JSON) {
+                                      parameters:params success:^(AFHTTPRequestOperation *operation, id JSON) {
+                                        NSLog(@"successfully logged in user to Django");
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"error logging in user to Django %@", error);
+        }];
+         
+    }
 }
-*/
 
 - (void) initializeFacebookInformation
 {
-    NSLog(@"init Facebook Information");
+    self.didCompleteProfileInformation = NO;
+    self.didCompleteFriendsInformation = NO;
     // get basic user information and
     FBRequest *request = [FBRequest requestForMe];
-    NSString *query =
+    
+    // add gender and name to the query
+    NSString *query =    
     @"SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY mutual_friend_count DESC";
+    
+    NSString *query2 =
+    @"SELECT (uid, gender, name) FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY mutual_friend_count DESC";
+    
     // Set up the query parameter
     NSDictionary *queryParam = [NSDictionary dictionaryWithObjectsAndKeys:query, @"q", nil];
     // Make the API request that uses FQL
@@ -248,83 +147,70 @@
                                               id result,
                                               NSError *error) {
                               if (error) {
-                                  NSLog(@"Error while getting facebook friends");
+                                  NSLog(@"Error while getting facebook friends, retry");
                               } else {
-                                  //creates a dict of ids
-                                  NSMutableArray *ids = [[NSMutableArray alloc] initWithCapacity: [result count]];
+                                 self.friendIds = [[NSMutableArray alloc] initWithCapacity: [result count]];
                                   
                                   NSArray *parsed = result[@"data"];
                                   for(id object in parsed)
                                   {
-                                      //NSLog(@"Current: %@", object);
-                                      [ids addObject: object[@"uid"]];
+                                      [self.friendIds addObject: object[@"uid"]];
                                   }
                                   
-                                  //NSLog(@"IDs: %@", ids);
+                                  self.didCompleteFriendsInformation = YES;
+                                  [self sendSaveUserAndFacebookInformation];
                                   
-                                  //saves
-                                  NSLog(@"Friend IDs: %@", ids);
-                                  
-                                  
+                                  // need to save the active user's values
+                                  /*
                                   [[KCSUser activeUser] setValue: ids forAttribute: @"friends"];
                                   [[KCSUser activeUser] saveWithCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
                                       NSLog(@"shit happens");
-                                  }];
-                                   
-                                  
-                                  
-                                  //[[PFUser currentUser] setObject:ids forKey:@"friends"];
-                                  //[[PFUser currentUser] saveInBackground];
+                                  }]; */
                                   
                               }
                           }];
-    
+
+    // set a property and call a method to check both properties
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         // handle response
         if (!error) {
             // Parse the data received
             NSDictionary *userData = (NSDictionary *)result;
-            
             NSString *facebookID = userData[@"id"];
-            
             NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
-            
-            // dict to hold data
-            NSMutableDictionary *userProfile = [NSMutableDictionary dictionaryWithCapacity:7];
-            
+           self.userProfile = [NSMutableDictionary dictionaryWithCapacity:7];
             if (facebookID) {
-                userProfile[@"facebookId"] = facebookID;
+                self.userProfile[@"facebookId"] = facebookID;
             }
             
             if (userData[@"name"]) {
-                userProfile[@"name"] = userData[@"name"];
+                self.userProfile[@"name"] = userData[@"name"];
             }
             
             if (userData[@"location"][@"name"]) {
-                userProfile[@"location"] = userData[@"location"][@"name"];
+                self.userProfile[@"location"] = userData[@"location"][@"name"];
             }
             
             if (userData[@"gender"]) {
-                userProfile[@"gender"] = userData[@"gender"];
+                self.userProfile[@"gender"] = userData[@"gender"];
             }
             
             if (userData[@"birthday"]) {
-                userProfile[@"birthday"] = userData[@"birthday"];
+                self.userProfile[@"birthday"] = userData[@"birthday"];
             }
             
             if (userData[@"relationship_status"]) {
-                userProfile[@"relationship"] = userData[@"relationship_status"];
+                self.userProfile[@"relationship"] = userData[@"relationship_status"];
             }
             
             if ([pictureURL absoluteString]) {
-                userProfile[@"pictureURL"] = [pictureURL absoluteString];
+                self.userProfile[@"pictureURL"] = [pictureURL absoluteString];
             }
-            [[KCSUser activeUser] setValue: userProfile forAttribute: @"profile"];
+            self.didCompleteProfileInformation = YES;
+            [self sendSaveUserAndFacebookInformation];
             
-            NSLog(@"Profile: %@", userProfile);
-            //[[PFUser currentUser] setObject:userProfile forKey:@"profile"];
-            //[[PFUser currentUser] saveInBackground];
-            
+            //[[KCSUser activeUser] setValue: userProfile forAttribute: @"profile"];
+                        
         } else if ([[[[error userInfo] objectForKey:@"error"] objectForKey:@"type"]
                     isEqualToString: @"OAuthException"]) { // Since the request failed, we can check if it was due to an invalid session
             NSLog(@"The facebook session was invalidated");
@@ -336,7 +222,6 @@
 }
 
 
-
 - (IBAction)loginButtonTouch:(id)sender {
     
     
@@ -346,108 +231,36 @@
     NSLog(@"About to login");
     // login Facebook User
     
-    
-    NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
-    
     [session openWithCompletionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-        NSLog(@"In login block");
         [FBSession setActiveSession:session];
         if (status == FBSessionStateOpen) {
-            NSLog(@"Open?: ");
-            NSLog(session.isOpen ? @"Yes" : @"No");
             NSString* accessToken = session.accessToken;
-            [KCSUser loginWithWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
+            /**
+            [KCSUser loginWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
                 NSLog(@"Finished login");
                 
                 NSLog(@"Accesstoken: %@", accessToken);
-
                 
                 //saves and updates data
                 [self initializeFacebookInformation];
-                
                 [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
             }];
+             */
+            NSLog(@"Finished login");
+            
+            NSLog(@"Accesstoken: %@", accessToken);
+            
+            //saves and updates data
+            [self initializeFacebookInformation];
+            
+            
         }
         else
         {
-            NSLog(@"something happened");
-            NSLog(@"Some other status: %@", status);
+            NSLog(@"Some other status: %u", status);
         }
     }];
     NSLog(@"Exited block");
     [_activityIndicator startAnimating];
-    /*
-    [FBSession openActiveSessionWithPermissions:permissionsArray allowLoginUI:YES completionHandler:^(FBSession *session, FBSessionState status, NSError *error) {
-        NSLog(@"called");
-        switch (status) {
-            case FBSessionStateOpen: {
-                NSLog(@"Open?: ");
-                NSLog([FBSession activeSession].isOpen ? @"Yes" : @"No");
-                NSString* accessToken = session.accessToken;
-                [KCSUser loginWithWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
-                    NSLog(@"Finished login");
-                    
-                    NSLog(@"Accesstoken: %@", accessToken);
-                    //[FBSession setActiveSession:session];
-                    
-                    //saves and updates data
-                    [self initializeFacebookInformation];
-                    
-                    [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
-                }];
-                break;
-            }
-            case FBSessionStateClosed:
-                NSLog(@"closed");
-                break;
-            case FBSessionStateCreated:
-                NSLog(@"created");
-                break;
-            case FBSessionStateCreatedOpening:
-                NSLog(@"opening");
-                break;
-            case FBSessionStateClosedLoginFailed:
-                NSLog(@"failed");
-                break;
-            case FBSessionStateOpenTokenExtended:
-                NSLog(@"extended");
-                break;
-            case FBSessionStateCreatedTokenLoaded:
-                NSLog(@"loaded");
-                break;
-        }
-        
-    }];
-    */ 
-    /*
-    [FBSession openActiveSessionWithPermissions:permissionsArray allowLoginUI:YES completionHandler:^(FBSession *session,
-                                         FBSessionState status,
-                                         NSError *error) {
-        NSLog(@"In login block");
-        if (status == FBSessionStateOpen) {
-            NSLog(@"Open?: ");
-            NSLog([FBSession activeSession].isOpen ? @"Yes" : @"No");
-            NSString* accessToken = session.accessToken;
-            [KCSUser loginWithWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
-                NSLog(@"Finished login");
-                
-                NSLog(@"Accesstoken: %@", accessToken);
-                //[FBSession setActiveSession:session];
-                
-                //saves and updates data
-                [self initializeFacebookInformation];
-                
-                [self performSegueWithIdentifier:@"loginToHomeScreen" sender:self];
-            }];
-        }
-        else
-        {
-            NSLog(@"something happened");
-            NSLog(@"Some other status: %@", status);
-        }
-    }];
-    NSLog(@"Exited block");
-    [_activityIndicator startAnimating];
-*/
 }
 @end

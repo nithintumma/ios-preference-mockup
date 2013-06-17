@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import <KinveyKit/KinveyKit.h>
 #include <FacebookSDK/FacebookSDK.h>
+#import "AFHTTPClient.h"
 
 @implementation AppDelegate
 
@@ -17,8 +18,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    [Parse setApplicationId:@"dMu8BAni6T7g63aDFCkO6nQaqvtBzh1FRm5PdQr7"
-                  clientKey:@"ucz4eTFV2nD1r3EuUhTXX0eHyi0JIuz5nSL42vVm"];
     // setup Kinvey
     //Kinvey use code: You'll need to create an app on the backend and initialize it here:
     //http://docs.kinvey.com/ios-developers-guide.html#Initializing_Programmatically
@@ -26,18 +25,12 @@
                                                         withAppSecret:@"5ebd3508b6a3442cb2671280eef4fa18"
                                                          usingOptions:nil];
     
-    
     //NOTE: the FB APP ID also has to go in the url scheme in StatusShare-Info.plist so the FB callback has a place to go
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     self.session = [[FBSession alloc] initWithAppID:@"545929018807731" permissions:permissionsArray defaultAudience:nil urlSchemeSuffix:nil tokenCacheStrategy:nil];
-    //self.session = [[FBSession alloc] initWithAppID:@"545929018807731"
-    //                                    permissions:permissionsArray];
-    //self.session = [[FBSession alloc] initWithPermissions:permissionsArray];
-    
-    
-    // setup facebook
+        
+    // add some shit a
     //[PFFacebookUtils initializeFacebook];
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     [FBProfilePictureView class];
 

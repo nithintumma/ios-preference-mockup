@@ -12,4 +12,8 @@
 - (IBAction)loginButtonTouch:(id)sender;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, assign) BOOL loggedIn;
+@property (nonatomic, assign) BOOL didCompleteProfileInformation;
+@property (nonatomic, assign) BOOL didCompleteFriendsInformation;
+@property (nonatomic, strong) NSMutableDictionary *userProfile;
+@property (nonatomic, strong) NSMutableArray *friendIds;
 @end

@@ -15,6 +15,8 @@
 #import "UIImageView+WebCache.h"
 #import "SDImageCache.h"
 #import <QuartzCore/QuartzCore.h> 
+#import "PaveAPIClient.h"
+
 
 @interface TableViewController ()
 
@@ -42,12 +44,12 @@
     //KCSCollection* collection = [KCSCollection collectionFromString:@"FeedObject" ofClass:[FeedObject class]];
     
     //sets up the store for answers
-    self.store = [KCSAppdataStore storeWithOptions:@{ KCSStoreKeyCollectionName : @"FeedObject",
-               KCSStoreKeyCollectionTemplateClass : [FeedObject class]}];
+    //self.store = [KCSAppdataStore storeWithOptions:@{ KCSStoreKeyCollectionName : @"FeedObject",
+    //           KCSStoreKeyCollectionTemplateClass : [FeedObject class]}];
     //self.store = [KCSAppdataStore storeWithOptions:[NSDictionary dictionaryWithObjectsAndKeys:collection, KCSStoreKeyResource, [NSNumber numberWithInt:KCSCachePolicyNone], KCSStoreKeyCachePolicy, nil]];
     
-    self.paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    self.dataPath = [self.paths[0] stringByAppendingPathComponent:@"imageCache"];
+    //self.paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    //self.dataPath = [self.paths[0] stringByAppendingPathComponent:@"imageCache"];
     
     [self getFeedIds];
     
@@ -99,19 +101,33 @@
     KCSUser *activeUser = [KCSUser activeUser];
     NSString *currentId = [activeUser kinveyObjectId];
     
-    [KCSCustomEndpoints callEndpoint: @"getFeedIds" params: @{@"user_id":currentId} completionBlock:^(id results, NSError *error) {
+    
+    //[KCSCustomEndpoints callEndpoint: @"getFeedIds" params: @{@"user_id":currentId} completionBlock:^(id results, NSError *error) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *path = @"/data/getallfeedobjects/";
+    path = [path stringByAppendingString:[defaults objectForKey:@"profile"][@"facebookId"]];
+    path = [path stringByAppendingString:@"/"];
+    [[PaveAPIClient sharedClient] postPath:path parameters:nil success:^(AFHTTPRequestOperation *operation, id results) {
         if (results) {
+            NSMutableArray *ids = [[NSMutableArray alloc] init];
+            for(NSDictionary *current in results)
+            {
+                [ids addObject:current[@"id"]];
+            }
             
-            self.feedIds = results;
+            self.feedIds = ids;
             NSLog(@"Just finished getting feed ids: %@", self.feedIds);
 
             self.doneLoadingFeed = YES;
             [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             
-        } else{
-            NSLog(@"error getting feed ids: %@", error);
-        }
-    }];    
+        } }
+        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"error logging in user to Django %@", error);
+        }];
+     
+    
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -155,6 +171,7 @@
         
         NSLog(@"Going to query for: %@", [self.feedIds objectAtIndex:indexPath.row]);
         
+        /**
         KCSQuery* query = [KCSQuery queryOnField:@"userId" withExactMatchForValue: [self.feedIds objectAtIndex:indexPath.row]];
 
         KCSQuerySortModifier* sortByDate = [[KCSQuerySortModifier alloc] initWithField:@"FeedObject" inDirection:kKCSAscending];
@@ -162,71 +179,42 @@
         [query addSortModifier:sortByDate]; //sort the return by the date field
         
         [query setLimitModifer:[[KCSQueryLimitModifier alloc] initWithLimit:1]]; //just get back 1 result
+        */
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *path = [NSString stringWithFormat:@"/data/getfeedobject/%@/", [self.feedIds objectAtIndex:indexPath.row]];
         
-        KCSUser *activeUser = [KCSUser activeUser];
-        NSString *currentId = [activeUser kinveyObjectId];
-        
-        if ([KCSUser hasSavedCredentials]){
-            NSLog(@"the user has saved credentials: %@ %@", activeUser, currentId);
-        }
-        
-        
-        NSLog(@"about to get in self store: %@", query);
-        [self.store loadObjectWithID:[self.feedIds objectAtIndex:indexPath.row] withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
+        //path = [path stringByAppendingString:[self.feedIds objectAtIndex:indexPath.row]];
+
+        [[PaveAPIClient sharedClient] postPath:path parameters:nil success:^(AFHTTPRequestOperation *operation, id input) {
+        //[self.store loadObjectWithID:[self.feedIds objectAtIndex:indexPath.row] withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
             NSLog(@"inside block: query was %@", [self.feedIds objectAtIndex:indexPath.row]);
-            if (objectsOrNil) {
-                NSLog(@"Objects array: %@", ((FeedObject*)objectsOrNil[0]));
-                NSLog(@"array: %@", ((FeedObject*)objectsOrNil[0]).answers);
-                NSLog(@"q id: %@", ((FeedObject*)objectsOrNil[0]).questionId);
-                NSLog(@"p1 id: %@", ((FeedObject*)objectsOrNil[0]).firstProductId);
+            if (input) {
+                NSLog(@"Objects array: %@", input);
                 
-                cell.question.text = ((FeedObject*)objectsOrNil[0]).questionText;
+                NSDictionary *result = input[0];
+                
+                cell.question.text = result[@"fields"][@"questionText"];
 
-                NSString* firstProductName = ((FeedObject*)objectsOrNil[0]).firstProductFileName;
-                NSString* secondProductName = ((FeedObject*)objectsOrNil[0]).secondProductFileName;
-                
-                NSMutableDictionary *counts = [[NSMutableDictionary alloc] initWithCapacity:2];
-                [counts setObject:[NSNumber numberWithInteger:0] forKey:firstProductName];
-                [counts setObject:[NSNumber numberWithInteger:0] forKey:secondProductName];
-
-                NSMutableDictionary *pictures = [[NSMutableDictionary alloc] initWithCapacity:2];
-                [pictures setObject:@"none" forKey:firstProductName];
-                [pictures setObject:@"none" forKey:secondProductName];
-                
-                
-                //NSMutableDictionary *counts = [[NSDictionary alloc] initWithObjectsAndKeys: (NSInteger)0, firstProductName,  (NSInteger)0,secondProductName, nil];
-                
-                NSArray* answers = ((FeedObject*)objectsOrNil[0]).answers;
-                for(NSDictionary *item in answers)
-                {
-                    NSLog(@"Item is %@", item);
-                    int value = [counts[item[@"productFileName"]] intValue];
-                    value = value+1;
-                    
-                    [counts setObject: [NSNumber numberWithInteger:value] forKey:item[@"productFileName"]];
-                    
-                    [pictures setObject: item[@"fromFacebookId"] forKey:item[@"productFileName"]];
-                    
-                    
-                }
-                
-                NSLog(@"Counts: %@", counts);
-         
-                NSArray *keys = [counts allKeys];
-                NSString *chosenName  = keys[0];
-                NSNumber *chosenNum  = counts[chosenName];
-                NSString *wrongName  = keys[1];
-                NSNumber *wrongNum  = counts[wrongName];
+                NSString* chosenFriend = result[@"fields"][@"fbFriend1"];
+                NSString* wrongFriend = result[@"fields"][@"fbFriend2"];
+                                                
+                NSString *chosenName  = result[@"fields"][@"image1"];
+                NSNumber *chosenNum  = result[@"fields"][@"product1Count"];
+                NSString *wrongName  = result[@"fields"][@"image2"];
+                NSNumber *wrongNum  = result[@"fields"][@"product2Count"];
                 
                 NSLog(@"Chosen name is first %@ with count %@", chosenName, chosenNum);
                 if([chosenNum intValue] < [wrongNum intValue])
                 {
                     NSLog(@"Switching");
-                    chosenName  = keys[1];
-                    chosenNum  = counts[chosenName];
+                    chosenName  = result[@"fields"][@"image2"];
+                    chosenNum  = result[@"fields"][@"product2Count"];
+                    chosenFriend = result[@"fields"][@"fbFriend2"];
+
                     
-                    wrongName  = keys[0];
-                    wrongNum  = counts[wrongName];
+                    wrongName  = result[@"fields"][@"image1"];
+                    wrongNum  = result[@"fields"][@"product1Count"];
+                    wrongFriend = result[@"fields"][@"fbFriend1"];
                 }
                 NSLog(@"Chosen name is now %@ with count %@", chosenName, chosenNum);
                 
@@ -235,14 +223,16 @@
                 cell.rightCount.text = [wrongNum stringValue];;
                 
                 NSString *leftURL = @"https://graph.facebook.com/";
-                leftURL = [leftURL stringByAppendingString:pictures[chosenName]];
+                leftURL = [leftURL stringByAppendingString:chosenFriend];
                 leftURL = [leftURL stringByAppendingString:@"/picture"];
                 
-                NSString *rightURL = @"https://graph.facebook.com/";
+                NSString *rightURL = @"https://graph.facebook.com/";                
+                
                 //if some people gave this response
-                if(wrongNum != 0)
+                if([wrongNum intValue] != 0)
                 {
-                    rightURL = [rightURL stringByAppendingString:pictures[wrongName]];
+                    NSLog(@"Wrong num is %@ %@", wrongNum, wrongFriend);
+                    rightURL = [rightURL stringByAppendingString:wrongFriend];
                     rightURL = [rightURL stringByAppendingString:@"/picture"];
                 }
                 
@@ -338,16 +328,12 @@
                 cell.leftImage.layer.cornerRadius = 25;
                 cell.leftImage.clipsToBounds = YES;
                 
-            }
-            else
-            {
-                NSLog(@"Error: %@", errorOrNil);
+            }}
+        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"error logging in user to Django %@", error);
+        }];
 
-            }
-        } withProgressBlock:nil];
-        
-        
-        
+
         return cell;
     }
     else

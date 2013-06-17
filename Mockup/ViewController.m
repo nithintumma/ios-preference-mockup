@@ -14,6 +14,9 @@
 
 #import "AppDelegate.h"
 #import "Answer.h"
+#import "PaveAPIClient.h"
+#import "AFNetworking.h"
+
 
 @interface ViewController ()
 
@@ -83,8 +86,7 @@
     NSLog(@"initialized all arrays: %@ %@ %@ %@", self.friendFacebookIds, self.topProductIds, self.bottomProductIds, self.questionTexts);
     
     //sets up the store for answers
-    self.store = [KCSAppdataStore storeWithOptions:@{ KCSStoreKeyCollectionName : @"Answer",
-           KCSStoreKeyCollectionTemplateClass : [Answer class]}];
+    //self.store = [KCSAppdataStore storeWithOptions:@{ KCSStoreKeyCollectionName : @"Answer", KCSStoreKeyCollectionTemplateClass : [Answer class]}];
     
     //starts it off for the first time
     //[self reloadIntoBackgroundAtBeginning:0];
@@ -105,9 +107,6 @@
     NSDictionary *views = @{ @"car" : self.car };
     //[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(170)-[car]" options:0 metrics:nil views:views]];
     
-
-    
-    
 }
 
 - (void)didReceiveMemoryWarning
@@ -116,44 +115,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-//facebook stuff
-- (void) handeLogin:(NSError*)errorOrNil
-{
-    if (errorOrNil != nil) {
-         NSLog(@"FB shit didn't work :(((");
-    } else {
-        NSLog(@"FB shit worked!");
-    }
-    
-}
-
-- (IBAction)loginWithFacebook:(id)sender
-{
-    NSLog(@"In login w fb");
-    
-    AppDelegate* delegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    FBSession* session = [delegate session];
-
-    // if the session isn't open, let's open it now and present the login UX to the user
-    if (!session.isOpen) {
-        [session openWithCompletionHandler:^(FBSession *session,
-                                             FBSessionState status,
-                                             NSError *error) {
-            if (status == FBSessionStateOpen) {
-                NSString* accessToken = session.accessToken;
-                [KCSUser loginWithWithSocialIdentity:KCSSocialIDFacebook accessDictionary:@{KCSUserAccessTokenKey : accessToken} withCompletionBlock:^(KCSUser *user, NSError *errorOrNil, KCSUserActionResult result) {
-                    [self handeLogin:errorOrNil];
-                }];
-            }
-        }];
-    }
-    else
-    {
-        NSLog(@"Already in");
-    }
-}
-
-//end of Facebook stuff
 
 - (void)pan:(UIPanGestureRecognizer *)recognizer
 {
@@ -349,7 +310,14 @@ int getRand(int max, int old) {
 //this actually loads in an image for TWO in the future
 -(void) reloadIntoBackground
 {
-        
+    /*
+    [[PaveAPIClient sharedClient] getPath:@"randomquestion"
+                               parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+                                   NSLog(@"successfully got question");
+                               } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                   NSLog(@"did not get question %@", error);
+                               }];
+    */
     // set indicators to false
     self.profilePicDidLoad = NO;
     self.productsDidLoad = NO;
@@ -391,14 +359,24 @@ int getRand(int max, int old) {
     
 
     //NSString *currentId = [[PFUser currentUser] objectId];
-    if ([KCSUser hasSavedCredentials]){
-        NSLog(@"the user has saved credentials");
-    }
-    KCSUser *activeUser = [KCSUser activeUser];
-    NSString *currentId = [activeUser kinveyObjectId];
-
     
-    [KCSCustomEndpoints callEndpoint: @"getRandomFriend" params: nil completionBlock:^(id results, NSError *error) {
+    
+    //[KCSCustomEndpoints callEndpoint: @"getRandomFriend" params: nil completionBlock:^(id results, NSError *error) {
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSArray *friends = [defaults objectForKey:@"friends"];
+
+    int index = arc4random() % [friends count];
+    next_face.profileID = [NSString stringWithFormat:@"%@", friends[index]];
+    NSLog(@"Next profile: %@", next_face.profileID);
+    [self.friendFacebookIds replaceObjectAtIndex:((self.front+1)%3) withObject:[NSString stringWithFormat:@"%@", friends[index]]];
+    next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
+    next_face.layer.masksToBounds = YES;
+    NSLog(@"Just finished profile and count is %d", self.front);
+    self.profilePicDidLoad = YES;
+    
+    /**
+    [[PaveAPIClient sharedClient] postPath:@"/data/newuser" parameters:nil success:^(AFHTTPRequestOperation *operation, id results) {
         if (results) {
             //NSLog(@"Result in get rand friend is %@", results);
             next_face.profileID = [NSString stringWithFormat:@"%@", results[@"facebook_id"]];
@@ -410,40 +388,47 @@ int getRand(int max, int old) {
             next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
             next_face.layer.masksToBounds = YES;
             NSLog(@"Just finished profile and count is %d", self.front);
-        } else{
-            NSLog(@"error loading random friend: %@", error);
-        }
-        self.profilePicDidLoad = YES;
+        } 
+        self.profilePicDidLoad = YES; }
+    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"error logging in user to Django %@", error);
     }];
+     */
     
-    [KCSCustomEndpoints callEndpoint: @"getRandomProducts" params: nil completionBlock:^(id results, NSError *error) {
+    //0: question.fields.text
+    //1: product type
+    //2: product 1
+    //3: product 2
+    
+    
+    [[PaveAPIClient sharedClient] postPath:@"/data/randomquestion " parameters:nil success:^(AFHTTPRequestOperation *operation, id results) {
         if (results) {
-            NSLog(@"%@", results);
+            NSLog(@"Results: %@", results);
             
-            self.nextTopProductId = results[@"product_1"];
-            self.nextBottomId = results[@"product_2"];
+            self.nextTopProductId = results[2][@"pk"];
+            self.nextBottomId = results[3][@"pk"];
             
             //saves IDs of the top and bottom products
             
-            [self.topProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_1"]];
-            [self.bottomProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"product_2"]];
+            [self.topProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[2][@"pk"]];
+            [self.bottomProductIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[3][@"pk"]];
             
             //saves urls of top and bottom products
-            [self.topProductURLs replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"img_1"]];
-            [self.bottomProductURLs replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"img_2"]];
+            [self.topProductURLs replaceObjectAtIndex:((self.front+1)%3) withObject:results[2][@"fields"][@"fileURL"]];
+            [self.bottomProductURLs replaceObjectAtIndex:((self.front+1)%3) withObject:results[3][@"fields"][@"fileURL"]];
             
             //saves question info
-            [self.questionIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"question_id"]];
-            [self.questionTexts replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"question_text"]];
-            [self.questionTypes replaceObjectAtIndex:((self.front+1)%3) withObject:results[@"type"]];
+            [self.questionIds replaceObjectAtIndex:((self.front+1)%3) withObject:results[0][@"pk"]];
+            [self.questionTexts replaceObjectAtIndex:((self.front+1)%3) withObject:results[0][@"fields"][@"text"]];
+            [self.questionTypes replaceObjectAtIndex:((self.front+1)%3) withObject:results[0][@"fields"][@"type"]];
 
             NSLog(@"QUestions are %@", self.questionTexts);
             NSLog(@"Count is %d", self.front);
             //shows the current question
             self.question_label.text = [self.questionTexts objectAtIndex:(self.front+2)%3];
             
-            NSString *imgFilenameTop = results[@"img_1"];
-            NSString *imgFilenameBottom = results[@"img_2"];
+            NSString *imgFilenameTop = results[2][@"fields"][@"fileURL"];
+            NSString *imgFilenameBottom = results[3][@"fields"][@"fileURL"];
             // load the images from the database
             // set the UIImageView's to the new values
             next_top.layer.cornerRadius = 10;
@@ -478,12 +463,11 @@ int getRand(int max, int old) {
                 }
             } progressBlock:nil];
             
-        } else {
-            NSLog(@"error retrieving random products: %@", error);
-        }
-        self.productsDidLoad = YES;
-        
-    }];    
+        } 
+        self.productsDidLoad = YES; }                
+    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"error logging in user to Django %@", error);
+    }];
 }
 
 //this actually loads in an image for TWO in the future
@@ -528,6 +512,7 @@ int getRand(int max, int old) {
         //current = 1;
     }
     
+    /**
     //NSString *currentId = [[PFUser currentUser] objectId];
     if ([KCSUser hasSavedCredentials]){
         NSLog(@"the user has saved credentials");
@@ -554,32 +539,48 @@ int getRand(int max, int old) {
         }
         self.profilePicDidLoad = YES;
     }];
+    */
     
-    [KCSCustomEndpoints callEndpoint: @"getRandomProducts" params: nil completionBlock:^(id results, NSError *error) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSArray *friends = [defaults objectForKey:@"friends"];
+    
+    int index = arc4random() % [friends count];
+    next_face.profileID = [NSString stringWithFormat:@"%@", friends[index]];
+    NSLog(@"Next profile: %@", next_face.profileID);
+    [self.friendFacebookIds replaceObjectAtIndex:((current+2)%3) withObject:[NSString stringWithFormat:@"%@", friends[index]]];
+    next_face.layer.cornerRadius = CGRectGetWidth(next_face.bounds)/2;
+    next_face.layer.masksToBounds = YES;
+    NSLog(@"Just finished profile and count is %d", self.front);
+    self.profilePicDidLoad = YES;
+    
+    
+    //[KCSCustomEndpoints callEndpoint: @"getRandomProducts" params: nil completionBlock:^(id results, NSError *error) {
+    [[PaveAPIClient sharedClient] postPath:@"/data/randomquestion " parameters:nil success:^(AFHTTPRequestOperation *operation, id results) {
         if (results) {
             NSLog(@"%@", results);
             
-            self.nextTopProductId = results[@"product_1"];
-            self.nextBottomId = results[@"product_2"];
+            self.nextTopProductId = results[2][@"pk"];
+            self.nextBottomId = results[3][@"pk"];
             
             //saves IDs of the top and bottom products
             
-            [self.topProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_1"]];
-            [self.bottomProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"product_2"]];
+            [self.topProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[2][@"pk"]];
+            [self.bottomProductIds replaceObjectAtIndex:((current+2)%3) withObject:results[3][@"pk"]];
             
             //saves urls of top and bottom products
-            [self.topProductURLs replaceObjectAtIndex:((current+2)%3) withObject:results[@"img_1"]];
-            [self.bottomProductURLs replaceObjectAtIndex:((current+2)%3) withObject:results[@"img_2"]];
+            [self.topProductURLs replaceObjectAtIndex:((current+2)%3) withObject:results[2][@"fields"][@"fileURL"]];
+            [self.bottomProductURLs replaceObjectAtIndex:((current+2)%3) withObject:results[3][@"fields"][@"fileURL"]];
             
             //saves question info
-            [self.questionIds replaceObjectAtIndex:((current+2)%3) withObject:results[@"question_id"]];
-            [self.questionTexts replaceObjectAtIndex:((current+2)%3) withObject:results[@"question_text"]];
-            [self.questionTypes replaceObjectAtIndex:((current+2)%3) withObject:results[@"type"]];
+            [self.questionIds replaceObjectAtIndex:((current+2)%3) withObject:results[0][@"pk"]];
+            [self.questionTexts replaceObjectAtIndex:((current+2)%3) withObject:results[0][@"fields"][@"text"]];
+            [self.questionTypes replaceObjectAtIndex:((current+2)%3) withObject:results[0][@"fields"][@"type"]];
             
             NSLog(@"initialized all arrays: %@", self.questionTexts);
             
-            NSString *imgFilenameTop = results[@"img_1"];
-            NSString *imgFilenameBottom = results[@"img_2"];
+            NSString *imgFilenameTop = results[2][@"fields"][@"fileURL"];
+            NSString *imgFilenameBottom = results[3][@"fields"][@"fileURL"];
+            
             // load the images from the database
             // set the UIImageView's to the new values
             next_top.layer.cornerRadius = 10;
@@ -614,11 +615,10 @@ int getRand(int max, int old) {
                 }
             } progressBlock:nil];
             
-        } else {
-            NSLog(@"error retrieving random products: %@", error);
-        }
-        self.productsDidLoad = YES;
-        
+        } 
+        self.productsDidLoad = YES; }
+    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"error logging in user to Django %@", error);
     }];
 }
 
@@ -725,6 +725,21 @@ int getRand(int max, int old) {
         dbAnswer.losingProductFileName = [self.topProductURLs objectAtIndex:(self.front+2)%3];
     }
 
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    //fix answer for facebook id
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys: [defaults objectForKey:@"profile"][@"facebookId"], @"id_facebookID", @"1256912018", @"id_forFacebookID", dbAnswer.winningProductId, @"id_chosenProduct", dbAnswer.losingProductId, @"id_wrongProduct", dbAnswer.questionId, @"id_question", nil];
+    
+    
+    [[PaveAPIClient sharedClient] postPath:@"/data/newanswer"
+                                parameters:params success:^(AFHTTPRequestOperation *operation, id JSON) {
+                                    NSLog(@"successfully saved answer");
+                                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                    NSLog(@"error saving answer %@", error);
+                                }];
+
+    
+    /**
     [self.store saveObject:dbAnswer withCompletionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
         if (errorOrNil != nil) {
             //save failed, show an error alert
@@ -734,6 +749,7 @@ int getRand(int max, int old) {
             NSLog(@"Successfully saved event (id='%@').", [objectsOrNil[0] kinveyObjectId]);
         }
     } withProgressBlock:nil];
+     */
     
     [self refresh];  
     
