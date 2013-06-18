@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "ToastAlert.h"
+#import "Toast+UIView.h"
 #import <Parse/Parse.h>
 #import <KinveyKit/KinveyKit.h>
 #import <QuartzCore/QuartzCore.h> 
@@ -16,7 +17,9 @@
 #import "Answer.h"
 #import "PaveAPIClient.h"
 #import "AFNetworking.h"
-
+#import "MTPopupWindow.h"
+#import "SDImageCache.h"
+#import "UIImageView+WebCache.h"
 
 @interface ViewController ()
 
@@ -246,19 +249,24 @@ int getRand(int max, int old) {
 
             //self.car.transform = CGAffineTransformMakeTranslation(self.car.frame.origin.x + 300,0);
             CGAffineTransform trans = CGAffineTransformTranslate(self.car.transform, 100,0);
-
-            
-
-         
+                     
             NSLog(@"Now at: %f", self.car.frame.origin.x);
             self.car.transform = trans;
             [self.view layoutIfNeeded];
         }];
+        
+             
     }
     else
     {
         CGAffineTransform trans = CGAffineTransformIdentity;
         self.car.transform = trans;
+        
+        [self.view makeToast:@"Based on Pave user answers, here's an insight about you."
+                    duration:3.0
+                    position:[NSValue valueWithCGPoint:CGPointMake(200,200)]
+                       image:[UIImage imageNamed:@"insight.png"]];
+        
         [self.view layoutIfNeeded];
     }
 
@@ -437,6 +445,7 @@ int getRand(int max, int old) {
             next_bottom.layer.masksToBounds = YES;
             
             // download the top image
+            /**
             [KCSResourceService downloadResource:imgFilenameTop completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
                 if (errorOrNil == nil && objectsOrNil.count == 1) {
                     //successful download
@@ -446,9 +455,24 @@ int getRand(int max, int old) {
                 } else {
                     NSLog(@"error downloading 'topProductImage'");
                 }
-            } progressBlock:nil];
+            } progressBlock:nil];*/
+            NSString *topURL = @"https://s3.amazonaws.com/pave_product_images/";
+            topURL = [topURL stringByAppendingString:imgFilenameTop];
+            topURL = [topURL stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+
+            [next_top setImageWithURL:[NSURL URLWithString:topURL]
+                            placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                                     options:SDWebImageRefreshCached];            
             
             // download the top image
+            NSString *bottomURL = @"https://s3.amazonaws.com/pave_product_images/";
+            bottomURL = [bottomURL stringByAppendingString:imgFilenameBottom];
+            bottomURL = [bottomURL stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+            [next_bottom setImageWithURL:[NSURL URLWithString:bottomURL]
+                     placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                              options:SDWebImageRefreshCached];
+            
+            /**
             [KCSResourceService downloadResource:imgFilenameBottom completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
                 if (errorOrNil == nil && objectsOrNil.count == 1) {
                     //successful download
@@ -462,7 +486,7 @@ int getRand(int max, int old) {
                     NSLog(@"error downloading 'bottomProductImage'");
                 }
             } progressBlock:nil];
-            
+            */
         } 
         self.productsDidLoad = YES; }                
     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -588,7 +612,24 @@ int getRand(int max, int old) {
             next_bottom.layer.cornerRadius = 10;
             next_bottom.layer.masksToBounds = YES;
             
+            NSString *topURL = @"https://s3.amazonaws.com/pave_product_images/";
+            topURL = [topURL stringByAppendingString:imgFilenameTop];
+            topURL = [topURL stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+            
+            [next_top setImageWithURL:[NSURL URLWithString:topURL]
+                     placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                              options:SDWebImageRefreshCached];
+            
             // download the top image
+            NSString *bottomURL = @"https://s3.amazonaws.com/pave_product_images/";
+            bottomURL = [bottomURL stringByAppendingString:imgFilenameBottom];
+            bottomURL = [bottomURL stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+            [next_bottom setImageWithURL:[NSURL URLWithString:bottomURL]
+                        placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                                 options:SDWebImageRefreshCached];
+            
+            // download the top image
+            /**
             [KCSResourceService downloadResource:imgFilenameTop completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
                 if (errorOrNil == nil && objectsOrNil.count == 1) {
                     //successful download
@@ -599,6 +640,7 @@ int getRand(int max, int old) {
                     NSLog(@"error downloading 'topProductImage'");
                 }
             } progressBlock:nil];
+            
             
             // download the top image
             [KCSResourceService downloadResource:imgFilenameBottom completionBlock:^(NSArray *objectsOrNil, NSError *errorOrNil) {
@@ -614,6 +656,7 @@ int getRand(int max, int old) {
                     NSLog(@"error downloading 'bottomProductImage'");
                 }
             } progressBlock:nil];
+             */
             
         } 
         self.productsDidLoad = YES; }
@@ -665,10 +708,6 @@ int getRand(int max, int old) {
         NSLog(@"Current bottom id: %@", [self.bottomProductIds objectAtIndex:self.front]);
         
         [self reloadIntoBackground];
-        
-        NSInteger greeting = arc4random() % 5;
-        int intGreeting = greeting;
-        [self.view addSubview: [[ToastAlert alloc] initWithText: thanks[intGreeting]]];
         
         //resets face position
         CGRect newButtonFrame = self.face.frame;
